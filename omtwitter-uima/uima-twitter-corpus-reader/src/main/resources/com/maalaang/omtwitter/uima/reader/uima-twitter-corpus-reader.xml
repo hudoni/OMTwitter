@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<collectionReaderDescription xmlns="http://uima.apache.org/resourceSpecifier">
+  <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+  <implementationName>com.maalaang.omtwitter.uima.reader.TwitterCorpusReader</implementationName>
+  <processingResourceMetaData>
+    <name>TwitterCorpusReader</name>
+    <description>Reads tweets from twitter corpus written in a text format</description>
+    <version>1.0</version>
+    <vendor>maalaang.com</vendor>
+    <configurationParameters>
+      <configurationParameter>
+        <name>twitterCorpusFile</name>
+        <description>path of a twitter corpus file</description>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>fields</name>
+        <description>The fields of the corpus file. Each field name should be separated by a space.
+FIELD NAME := IGNORE | ID | AUTHOR | TEXT | DATE | POLARITY | QUERY
+For example: ID DATE AUTHOR TEXT</description>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>splitRegex</name>
+        <description>The regular expression for splitting the fields in a line. If the fields are separated by tab, specify \n.</description>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+    </configurationParameters>
+    <configurationParameterSettings/>
+    <typeSystemDescription>
+      <imports>
+        <import name="com.maalaang.omtwitter.uima.type.TweetAnnotation"/>
+      </imports>
+    </typeSystemDescription>
+    <typePriorities/>
+    <fsIndexCollection/>
+    <capabilities>
+      <capability>
+        <inputs/>
+        <outputs>
+          <type>com.maalaang.omtwitter.uima.type.TweetAnnotation</type>
+          <feature>com.maalaang.omtwitter.uima.type.TweetAnnotation:query</feature>
+          <feature>com.maalaang.omtwitter.uima.type.TweetAnnotation:polarity</feature>
+          <feature>com.maalaang.omtwitter.uima.type.TweetAnnotation:author</feature>
+          <feature>com.maalaang.omtwitter.uima.type.TweetAnnotation:end</feature>
+          <feature>com.maalaang.omtwitter.uima.type.TweetAnnotation:begin</feature>
+        </outputs>
+        <languagesSupported/>
+      </capability>
+    </capabilities>
+    <operationalProperties>
+      <modifiesCas>true</modifiesCas>
+      <multipleDeploymentAllowed>false</multipleDeploymentAllowed>
+      <outputsNewCASes>true</outputsNewCASes>
+    </operationalProperties>
+  </processingResourceMetaData>
+  <resourceManagerConfiguration/>
+</collectionReaderDescription>
