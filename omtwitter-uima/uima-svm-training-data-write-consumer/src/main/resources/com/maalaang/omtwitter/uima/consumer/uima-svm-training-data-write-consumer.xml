@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<casConsumerDescription xmlns="http://uima.apache.org/resourceSpecifier">
+  <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+  <implementationName>com.maalaang.omtwitter.uima.consumer.SvmTrainingDataWriteConsumer</implementationName>
+  <processingResourceMetaData>
+    <name>uima-svm-training-data-write-consumer</name>
+    <description>Write a SVM training data file using the feature vectors generated based on the annotations.</description>
+    <version>1.0</version>
+    <vendor>maalaang.om</vendor>
+    <configurationParameters>
+      <configurationParameter>
+        <name>svmFVFactoryClassName</name>
+        <description>The name of the class that follows the com.maalaang.omtwitter.uima.ml.SvmFVFactory interface for generation of feature vectors.</description>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>svmTrainingDataFile</name>
+        <description>The file of the svm training examples to write.</description>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>svmTargetExtractorClassName</name>
+        <description>The name of the class that follows com.maalaang.omtwitter.uima.ml.SvmTargetExtractor  interface for getting the target of a svm training example.</description>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+    </configurationParameters>
+    <configurationParameterSettings/>
+    <typeSystemDescription>
+      <imports>
+        <import name="com.maalaang.omtwitter.uima.type.TweetAnnotation"/>
+        <import name="com.maalaang.omtwitter.uima.type.SentiWordNetAnnotation"/>
+        <import name="com.maalaang.omtwitter.uima.type.TwitterSentiCorpusAnnotation"/>
+      </imports>
+    </typeSystemDescription>
+    <typePriorities/>
+    <fsIndexCollection/>
+    <capabilities>
+      <capability>
+        <inputs>
+          <type>com.maalaang.omtwitter.uima.type.TwitterSentiCorpusAnnotation</type>
+          <type>com.maalaang.omtwitter.uima.type.TweetAnnotation</type>
+          <type>com.maalaang.omtwitter.uima.type.SentiWordNetAnnotation</type>
+          <feature>com.maalaang.omtwitter.uima.type.TwitterSentiCorpusAnnotation:id</feature>
+          <feature>com.maalaang.omtwitter.uima.type.TwitterSentiCorpusAnnotation:objectiveScore</feature>
+          <feature>com.maalaang.omtwitter.uima.type.TwitterSentiCorpusAnnotation:subjectiveScore</feature>
+          <feature>com.maalaang.omtwitter.uima.type.TwitterSentiCorpusAnnotation:negativeScore</feature>
+          <feature>com.maalaang.omtwitter.uima.type.TwitterSentiCorpusAnnotation:positiveScore</feature>
+          <feature>com.maalaang.omtwitter.uima.type.TwitterSentiCorpusAnnotation:end</feature>
+          <feature>com.maalaang.omtwitter.uima.type.TwitterSentiCorpusAnnotation:begin</feature>
+          <feature>com.maalaang.omtwitter.uima.type.TweetAnnotation:query</feature>
+          <feature>com.maalaang.omtwitter.uima.type.TweetAnnotation:polarity</feature>
+          <feature>com.maalaang.omtwitter.uima.type.TweetAnnotation:author</feature>
+          <feature>com.maalaang.omtwitter.uima.type.TweetAnnotation:end</feature>
+          <feature>com.maalaang.omtwitter.uima.type.TweetAnnotation:begin</feature>
+          <feature>com.maalaang.omtwitter.uima.type.SentiWordNetAnnotation:id</feature>
+          <feature>com.maalaang.omtwitter.uima.type.SentiWordNetAnnotation:objectiveScore</feature>
+          <feature>com.maalaang.omtwitter.uima.type.SentiWordNetAnnotation:subjectiveScore</feature>
+          <feature>com.maalaang.omtwitter.uima.type.SentiWordNetAnnotation:negativeScore</feature>
+          <feature>com.maalaang.omtwitter.uima.type.SentiWordNetAnnotation:positiveScore</feature>
+          <feature>com.maalaang.omtwitter.uima.type.SentiWordNetAnnotation:end</feature>
+          <feature>com.maalaang.omtwitter.uima.type.SentiWordNetAnnotation:begin</feature>
+        </inputs>
+        <outputs/>
+        <languagesSupported/>
+      </capability>
+    </capabilities>
+    <operationalProperties>
+      <modifiesCas>false</modifiesCas>
+      <multipleDeploymentAllowed>false</multipleDeploymentAllowed>
+      <outputsNewCASes>false</outputsNewCASes>
+    </operationalProperties>
+  </processingResourceMetaData>
+  <resourceManagerConfiguration/>
+</casConsumerDescription>
