@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
+  <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+  <primitive>true</primitive>
+  <annotatorImplementationName>com.maalaang.omtwitter.uima.annotator.SvmClassificationAnnotator</annotatorImplementationName>
+  <analysisEngineMetaData>
+    <name>uima-svm-classification-annotator</name>
+    <description>Annotates the classification result of SVM</description>
+    <version>1.0</version>
+    <vendor>maalaang.com</vendor>
+    <configurationParameters>
+      <configurationParameter>
+        <name>svmModelFile</name>
+        <description>The model file for this SVM classifier.</description>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>svmFVFactoryClassName</name>
+        <description>The name of the class, which follows com.maalaang.omtwitter.uima.ml.SvmFVFactory interface, for generating feature vector based on the annotations.</description>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>svmTargetUpdatorClassName</name>
+        <description>The name of the class, which follows com.maalaang.omtwitter.uima.ml.SvmTargetUpdator interface, for updating the annotation regarding the classification result from SVM.</description>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+    </configurationParameters>
+    <configurationParameterSettings/>
+    <typeSystemDescription/>
+    <typePriorities/>
+    <fsIndexCollection/>
+    <capabilities>
+      <capability>
+        <inputs/>
+        <outputs/>
+        <languagesSupported/>
+      </capability>
+    </capabilities>
+    <operationalProperties>
+      <modifiesCas>true</modifiesCas>
+      <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
+      <outputsNewCASes>false</outputsNewCASes>
+    </operationalProperties>
+  </analysisEngineMetaData>
+  <resourceManagerConfiguration/>
+</analysisEngineDescription>
