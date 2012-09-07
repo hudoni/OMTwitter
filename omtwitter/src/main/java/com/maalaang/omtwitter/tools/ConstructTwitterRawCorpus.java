@@ -21,7 +21,7 @@ public class ConstructTwitterRawCorpus {
 	public static void main(String[] args) {
 		try {
 			Properties prop = new Properties();
-			prop.load(new InputStreamReader(new FileInputStream(args[0]), "UTF-8"))
+			prop.load(new InputStreamReader(new FileInputStream(args[0]), "UTF-8"));
 			
 			// search
 			Model domainOntologyModel = ModelFactory.createDefaultModel();
@@ -38,7 +38,7 @@ public class ConstructTwitterRawCorpus {
 			tcc.constructCorpusBySearch(queryToResourceMap.keySet(), prop.getProperty("raw.corpus.search.file"),
 					Integer.parseInt(prop.getProperty("raw.corpus.search.rpp")), Integer.parseInt(prop.getProperty("raw.corpus.search.max")),
 					prop.getProperty("raw.corpus.search.lang", null), Integer.parseInt(prop.getProperty("raw.corpus.search.interval")),
-					Integer.parseInt(prop.getProperty("raw.corpus.search.retry.num")), Integer.parseInt(prop.getProperty("raw.corpus.search.retry.interval")))
+					Integer.parseInt(prop.getProperty("raw.corpus.search.retry.num")), Integer.parseInt(prop.getProperty("raw.corpus.search.retry.interval")));
 			queryToResourceMap = null;
 			
 			int[] searchCorpusFields = new int[] { OMTwitterCorpusFileReader.FIELD_ID,

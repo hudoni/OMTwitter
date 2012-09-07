@@ -22,7 +22,7 @@ public class OMTwitterCorpusFileReaderTest extends TestCase {
 		super.setUp();
 		
 		int[] fields = new int[] { OMTwitterCorpusFileReader.FIELD_QUERY, OMTwitterCorpusFileReader.FIELD_AUTHOR, OMTwitterCorpusFileReader.FIELD_TEXT };
-		reader = new OMTwitterCorpusFileReader(ClassLoader.getSystemResource("corpus/test_twitter_corpus_file.txt").getFile(), "\t", fields);
+		reader = new OMTwitterCorpusFileReader(ClassLoader.getSystemResource("corpus/twitter_corpus_example.txt").getFile(), "\t", fields);
 	}
 
 	@Override

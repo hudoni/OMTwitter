@@ -28,12 +28,12 @@ import com.maalaang.omtwitter.text.OMTweetTokenizer;
 
 public class BuildTwitterSentiCorpusDictionary {
 
-	private Logger logger = null
+	private Logger logger = null;
 	
 	private final static int INDEX_POS = 0;
 	private final static int INDEX_NEG = 1;
 	private final static int INDEX_NEU = 2;
-	private final static int INDEX_ALL = 3
+	private final static int INDEX_ALL = 3;
 	
 	public final static int SORT_BY_POS_SCORE = 0;
 	public final static int SORT_BY_NEG_SCORE = 1;
@@ -47,23 +47,25 @@ public class BuildTwitterSentiCorpusDictionary {
 			BuildTwitterSentiCorpusDictionary builder = new BuildTwitterSentiCorpusDictionary();
 			
 			Properties prop = new Properties();
-			prop.load(new InputStreamReader(new FileInputStream(args[0]), "UTF-8"))
+			prop.load(new InputStreamReader(new FileInputStream(args[0]), "UTF-8"));
 		
 			int[] corpusFields = new int[] { OMTwitterCorpusFileReader.FIELD_POLARITY,
 					OMTwitterCorpusFileReader.FIELD_QUERY,
 					OMTwitterCorpusFileReader.FIELD_AUTHOR,
-					OMTwitterCorpusFileReader.FIELD_TEXT }
+					OMTwitterCorpusFileReader.FIELD_TEXT };
 			
 			builder.buildDicFile(new OMTwitterCorpusFileReader(prop.getProperty("sentiCorpusFile"), corpusFields), prop.getProperty("sentiCorpusDicFile"));
-			builder.createObjectFile(prop.getProperty("sentiCorpusDicFile"), prop.getProperty("sentiCorpusDicObjectFile"))
+			builder.createObjectFile(prop.getProperty("sentiCorpusDicFile"), prop.getProperty("sentiCorpusDicObjectFile"));
 			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
 	
 
 	public BuildTwitterSentiCorpusDictionary() {
 		logger = Logger.getLogger(getClass());
+	}
 	
 	
 	private Map<String,TokenFreq> buildFreqMap(OMTwitterReader reader, int[] countArray) {
@@ -72,7 +74,7 @@ public class BuildTwitterSentiCorpusDictionary {
 		TokenFreq tokenFreq = null;
 		
 		while (reader.hasNext()) {
-			OMTweet tweet = reader.next()
+			OMTweet tweet = reader.next();
 		
 			int polarity = tweet.getPolarity();
 			
@@ -86,20 +88,20 @@ public class BuildTwitterSentiCorpusDictionary {
 					tokenFreq = new TokenFreq();
 				}
 			
-				switch (polarity) 
+				switch (polarity) {
 				case OMTweet.POLARITY_POSITIVE:
-					tokenFreq.pos++
+					tokenFreq.pos++;
 					countArray[INDEX_POS]++;
 					break;
-				case OMTweet.POLARITY_NEGATIVE
-					tokenFreq.neg++
+				case OMTweet.POLARITY_NEGATIVE:
+					tokenFreq.neg++;
 					countArray[INDEX_NEG]++;
 					break;
-				case OMTweet.POLARITY_NEUTRAL
+				case OMTweet.POLARITY_NEUTRAL:
 					tokenFreq.neu++;
 					countArray[INDEX_NEU]++;
 					break;
-				case OMTweet.POLARITY_NOT_SPECIFIED
+				case OMTweet.POLARITY_NOT_SPECIFIED:
 					throw new IllegalStateException();
 				}
 			
@@ -111,31 +113,31 @@ public class BuildTwitterSentiCorpusDictionary {
 		return map;
 	}
 	
-	public void buildDicFile(OMTwitterReader reader, String out) throws IOException 
+	public void buildDicFile(OMTwitterReader reader, String out) throws IOException {
 		Map<String,TokenFreq> map = null;
-		int[] countArray = new int[4]
-		double[] maxScoreArray = new double[2]
+		int[] countArray = new int[4];
+		double[] maxScoreArray = new double[2];
 	
-		map = buildFreqMap(reader, countArray)
+		map = buildFreqMap(reader, countArray);
 	
-		findMaxScore(map, countArray, maxScoreArray)
+		findMaxScore(map, countArray, maxScoreArray);
 		writeDicFile(out, map, SORT_BY_LEXICAL, countArray, maxScoreArray);
 		
-		reader.close()
+		reader.close();
 	}
 	
-	public void createObjectFile(String in, String out) throws IOException 
-		logger.info("load Twitter Sentiment Corpus dictionary - " + in)
-		TwitterSentiCorpusDictionary dic = new TwitterSentiCorpusDictionary()
-		dic.load(in)
-		logger.info("loaded")
+	public void createObjectFile(String in, String out) throws IOException {
+		logger.info("load Twitter Sentiment Corpus dictionary - " + in);
+		TwitterSentiCorpusDictionary dic = new TwitterSentiCorpusDictionary();
+		dic.load(in);
+		logger.info("loaded");
 	
 		logger.info("write object file - " + out);
-		ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(out))
-		oos.writeObject(dic)
-		oos.close()
+		ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(out));
+		oos.writeObject(dic);
+		oos.close();
 		logger.info("done");
-	
+	}
 	
 	private void writeDicFile(String out, Map<String,TokenFreq> map, int sortFlag, int[] countArray, double[] maxScoreArray) throws IOException {
 		TreeSet<Entry<String, TokenFreq>> sortedSet = new TreeSet<Map.Entry<String,TokenFreq>>(getFreqComparator(sortFlag, countArray));
@@ -143,15 +145,17 @@ public class BuildTwitterSentiCorpusDictionary {
 		
 		BufferedWriter fw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(out), "UTF-8"));
 		for (Entry<String, TokenFreq> e : sortedSet) {
-			TokenFreq f = e.getValue()
+			TokenFreq f = e.getValue();
 			fw.write(e.getKey());
 			fw.write('\t');
 			fw.write(String.format(Locale.ENGLISH, "%.4f", getPosScore(f.pos, f.neg, f.neu, countArray[INDEX_POS], countArray[INDEX_NEG], countArray[INDEX_NEU]) / maxScoreArray[INDEX_POS]));
 			fw.write('\t');
 			fw.write(String.format(Locale.ENGLISH, "%.4f", getNegScore(f.pos, f.neg, f.neu, countArray[INDEX_POS], countArray[INDEX_NEG], countArray[INDEX_NEU]) / maxScoreArray[INDEX_NEG]));
 			fw.write('\n');
+		}
 		
 		fw.close();
+	}
 	
 	
 	private void findMaxScore(Map<String,TokenFreq> map, int[] countArray, double[] maxScoreArray) {
@@ -160,7 +164,7 @@ public class BuildTwitterSentiCorpusDictionary {
 		
 		Set<Entry<String,TokenFreq>> set = map.entrySet();
 		
-		for (Entry<String,TokenFreq> e : set) 
+		for (Entry<String,TokenFreq> e : set) {
 			TokenFreq f = e.getValue();
 			double posScore = getPosScore(f.pos, f.neg, f.neu, countArray[INDEX_POS], countArray[INDEX_NEG], countArray[INDEX_NEU]);
 			double negScore = getNegScore(f.pos, f.neg, f.neu, countArray[INDEX_POS], countArray[INDEX_NEG], countArray[INDEX_NEU]);
@@ -171,10 +175,11 @@ public class BuildTwitterSentiCorpusDictionary {
 			if (maxNegScore < negScore) {
 				maxNegScore = negScore;
 			}
+		}
 		
 		maxScoreArray[INDEX_POS] = maxPosScore;
 		maxScoreArray[INDEX_NEG] = maxNegScore;
-	
+	}
 	
 	private Comparator<Map.Entry<String,TokenFreq>> getFreqComparator(int sortByFlag, final int[] countArray) {
 		Comparator<Map.Entry<String,TokenFreq>> comp = null;
