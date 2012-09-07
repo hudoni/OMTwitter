@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<casConsumerDescription xmlns="http://uima.apache.org/resourceSpecifier">
+  <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+  <implementationName>com.maalaang.omtwitter.uima.consumer.XmiWriteConsumer</implementationName>
+  <processingResourceMetaData>
+    <name>uima-xmi-write-consumer</name>
+    <description>Writes annotation results in XMI format</description>
+    <version>1.0</version>
+    <vendor>maalaang.com</vendor>
+    <configurationParameters>
+      <configurationParameter>
+        <name>outputDirectory</name>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+    </configurationParameters>
+    <configurationParameterSettings/>
+    <typeSystemDescription>
+      <imports>
+        <import name="com.maalaang.omtwitter.uima.type.SentenceAnnotation"/>
+        <import name="com.maalaang.omtwitter.uima.type.TokenAnnotation"/>
+        <import name="com.maalaang.omtwitter.uima.type.TweetAnnotation"/>
+        <import name="com.maalaang.omtwitter.uima.type.NegationAnnotation"/>
+        <import name="com.maalaang.omtwitter.uima.type.TwitterSentiCorpusAnnotation"/>
+        <import name="com.maalaang.omtwitter.uima.type.SentiWordNetAnnotation"/>
+      </imports>
+    </typeSystemDescription>
+    <typePriorities/>
+    <fsIndexCollection/>
+    <capabilities>
+      <capability>
+        <inputs>
+          <type>com.maalaang.omtwitter.uima.type.TweetAnnotation</type>
+          <type>com.maalaang.omtwitter.uima.type.TokenAnnotation</type>
+          <type>com.maalaang.omtwitter.uima.type.SentenceAnnotation</type>
+          <type>uima.tcas.DocumentAnnotation</type>
+          <feature>com.maalaang.omtwitter.uima.type.TweetAnnotation:query</feature>
+          <feature>com.maalaang.omtwitter.uima.type.TweetAnnotation:polarity</feature>
+          <feature>com.maalaang.omtwitter.uima.type.TweetAnnotation:author</feature>
+          <feature>com.maalaang.omtwitter.uima.type.TweetAnnotation:end</feature>
+          <feature>com.maalaang.omtwitter.uima.type.TweetAnnotation:begin</feature>
+          <feature>com.maalaang.omtwitter.uima.type.TokenAnnotation:stopword</feature>
+          <feature>com.maalaang.omtwitter.uima.type.TokenAnnotation:entityLabel</feature>
+          <feature>com.maalaang.omtwitter.uima.type.TokenAnnotation:stem</feature>
+          <feature>com.maalaang.omtwitter.uima.type.TokenAnnotation:posTag</feature>
+          <feature>com.maalaang.omtwitter.uima.type.TokenAnnotation:end</feature>
+          <feature>com.maalaang.omtwitter.uima.type.TokenAnnotation:begin</feature>
+          <feature>com.maalaang.omtwitter.uima.type.SentenceAnnotation:end</feature>
+          <feature>com.maalaang.omtwitter.uima.type.SentenceAnnotation:begin</feature>
+          <feature>uima.tcas.DocumentAnnotation:language</feature>
+          <feature>uima.tcas.DocumentAnnotation:end</feature>
+          <feature>uima.tcas.DocumentAnnotation:begin</feature>
+          <type>com.maalaang.omtwitter.uima.type.NegationAnnotation</type>
+          <feature>com.maalaang.omtwitter.uima.type.NegationAnnotation:end</feature>
+          <feature>com.maalaang.omtwitter.uima.type.NegationAnnotation:begin</feature>
+          <type>com.maalaang.omtwitter.uima.type.TwitterSentiCorpusAnnotation</type>
+          <type>com.maalaang.omtwitter.uima.type.SentiWordNetAnnotation</type>
+          <feature>com.maalaang.omtwitter.uima.type.TwitterSentiCorpusAnnotation:id</feature>
+          <feature>com.maalaang.omtwitter.uima.type.TwitterSentiCorpusAnnotation:objectiveScore</feature>
+          <feature>com.maalaang.omtwitter.uima.type.TwitterSentiCorpusAnnotation:subjectiveScore</feature>
+          <feature>com.maalaang.omtwitter.uima.type.TwitterSentiCorpusAnnotation:negativeScore</feature>
+          <feature>com.maalaang.omtwitter.uima.type.TwitterSentiCorpusAnnotation:positiveScore</feature>
+          <feature>com.maalaang.omtwitter.uima.type.TwitterSentiCorpusAnnotation:end</feature>
+          <feature>com.maalaang.omtwitter.uima.type.TwitterSentiCorpusAnnotation:begin</feature>
+          <feature>com.maalaang.omtwitter.uima.type.SentiWordNetAnnotation:id</feature>
+          <feature>com.maalaang.omtwitter.uima.type.SentiWordNetAnnotation:objectiveScore</feature>
+          <feature>com.maalaang.omtwitter.uima.type.SentiWordNetAnnotation:subjectiveScore</feature>
+          <feature>com.maalaang.omtwitter.uima.type.SentiWordNetAnnotation:negativeScore</feature>
+          <feature>com.maalaang.omtwitter.uima.type.SentiWordNetAnnotation:positiveScore</feature>
+          <feature>com.maalaang.omtwitter.uima.type.SentiWordNetAnnotation:end</feature>
+          <feature>com.maalaang.omtwitter.uima.type.SentiWordNetAnnotation:begin</feature>
+        </inputs>
+        <outputs/>
+        <languagesSupported/>
+      </capability>
+    </capabilities>
+    <operationalProperties>
+      <modifiesCas>false</modifiesCas>
+      <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
+      <outputsNewCASes>false</outputsNewCASes>
+    </operationalProperties>
+  </processingResourceMetaData>
+  <resourceManagerConfiguration/>
+</casConsumerDescription>
