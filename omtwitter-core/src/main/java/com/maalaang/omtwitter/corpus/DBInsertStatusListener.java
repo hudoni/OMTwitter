@@ -31,10 +31,11 @@ public class DBInsertStatusListener implements StatusListener {
 	
 	private String host = null;
 	private String db = null;
+	private String table = null;
 	private String user = null;
 	private String passwd = null;
 	
-	public DBInsertStatusListener(String host, String db, String user, String passwd) {
+	public DBInsertStatusListener(String host, String db, String table, String user, String passwd) {
 		this.logger = Logger.getLogger(getClass());
 		dateFormat = new SimpleDateFormat(OMTwitterCorpusFileReader.DATE_FORMAT);
 		
@@ -48,6 +49,7 @@ public class DBInsertStatusListener implements StatusListener {
 		
 		this.host = host;
 		this.db = db;
+		this.table = table;
 		this.user = user;
 		this.passwd = passwd;
 	}
@@ -79,7 +81,7 @@ public class DBInsertStatusListener implements StatusListener {
 	
 	private void setPreparedStatement() {
 		try {
-			pstmt = conn.prepareStatement("INSERT INTO status VALUES (?,?,?,?,?)");
+			pstmt = conn.prepareStatement("INSERT INTO " + table + " VALUES (?,?,?,?,?)");
 		} catch (SQLException e) {
 			logger.error(e);
 		}
