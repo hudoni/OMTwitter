@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
+  <name>SentenceAnnotation</name>
+  <description>A sentence annotation</description>
+  <version>1.0</version>
+  <vendor>maalaang.com</vendor>
+  <types>
+    <typeDescription>
+      <name>com.maalaang.omtwitter.uima.type.SentenceAnnotation</name>
+      <description>A sentence annotation
+</description>
+      <supertypeName>uima.tcas.Annotation</supertypeName>
+    </typeDescription>
+  </types>
+</typeSystemDescription>

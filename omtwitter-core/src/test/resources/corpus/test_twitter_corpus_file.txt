@@ -1,0 +1,2 @@
+query	author	this is an example tweet
+#sangwon	sangwon	hello world. my name is #sangwon :)

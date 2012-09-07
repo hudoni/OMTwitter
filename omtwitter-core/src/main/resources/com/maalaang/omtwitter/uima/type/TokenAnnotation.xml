@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
+  <name>TokenAnnotation</name>
+  <description>A single token annotation</description>
+  <version>1.0</version>
+  <vendor>maalaang.com</vendor>
+  <types>
+    <typeDescription>
+      <name>com.maalaang.omtwitter.uima.type.TokenAnnotation</name>
+      <description>A token annotation</description>
+      <supertypeName>uima.tcas.Annotation</supertypeName>
+      <features>
+        <featureDescription>
+          <name>posTag</name>
+          <description>the part-of-speech tag of this token</description>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>stem</name>
+          <description>the stem of the word</description>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>entityLabel</name>
+          <description>the label of the entity that contains this token</description>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>stopword</name>
+          <description>true if this token is a stopword, otherwise false</description>
+          <rangeTypeName>uima.cas.Boolean</rangeTypeName>
+        </featureDescription>
+      </features>
+    </typeDescription>
+  </types>
+</typeSystemDescription>

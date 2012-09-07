@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
+  <name>TwitterSentiCorpusAnnotation</name>
+  <description>A sentiment score annotation based on Twitter Sentiment Corpus</description>
+  <version>1.0</version>
+  <vendor>maalaang.com</vendor>
+  <types>
+    <typeDescription>
+      <name>com.maalaang.omtwitter.uima.type.TwitterSentiCorpusAnnotation</name>
+      <description>A sentiment score annotation based on Twitter Sentiment Corpus</description>
+      <supertypeName>uima.tcas.Annotation</supertypeName>
+      <features>
+        <featureDescription>
+          <name>positiveScore</name>
+          <description>positive score of this expression</description>
+          <rangeTypeName>uima.cas.Double</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>negativeScore</name>
+          <description>negative score of this expression</description>
+          <rangeTypeName>uima.cas.Double</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>subjectiveScore</name>
+          <description>subjective score of this expression</description>
+          <rangeTypeName>uima.cas.Double</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>objectiveScore</name>
+          <description>objective score of this expression</description>
+          <rangeTypeName>uima.cas.Double</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>id</name>
+          <description>id of this expression</description>
+          <rangeTypeName>uima.cas.Integer</rangeTypeName>
+        </featureDescription>
+      </features>
+    </typeDescription>
+  </types>
+</typeSystemDescription>

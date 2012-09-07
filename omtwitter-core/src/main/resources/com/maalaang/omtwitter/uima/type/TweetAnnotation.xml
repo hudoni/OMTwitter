@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
+  <name>TweetAnnotation</name>
+  <description>A tweet annotation</description>
+  <version>1.0</version>
+  <vendor>maalaang.com</vendor>
+  <types>
+    <typeDescription>
+      <name>com.maalaang.omtwitter.uima.type.TweetAnnotation</name>
+      <description>Single tweet annotation</description>
+      <supertypeName>uima.tcas.Annotation</supertypeName>
+      <features>
+        <featureDescription>
+          <name>author</name>
+          <description>user screen name of a tweet</description>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>polarity</name>
+          <description>overall sentiment polarity of a tweet [POS|NEG|NEU]</description>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>query</name>
+          <description>query words that were used for collecting a tweet</description>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+      </features>
+    </typeDescription>
+  </types>
+</typeSystemDescription>
