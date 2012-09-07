@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
+  <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+  <primitive>true</primitive>
+  <annotatorImplementationName>com.maalaang.omtwitter.uima.annotator.SentimentScoreAnnotator</annotatorImplementationName>
+  <analysisEngineMetaData>
+    <name>uima-sentiment-score-annotator</name>
+    <description>Annotates seniment scores of expressions found in the specified dictionary.</description>
+    <version>1.0</version>
+    <vendor>maalaang.com</vendor>
+    <configurationParameters>
+      <configurationParameter>
+        <name>sentiScoreDicObjectFile</name>
+        <description>A serialized object file of a sentiment score dictionary that implemented the interface com.maalaang.omtwitter.model.SentimentScoreDictionary.</description>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>maxWindowSize</name>
+        <description>The maximum window size of tokens that is used to retrieve a sentiment score dictionary.</description>
+        <type>Integer</type>
+        <multiValued>false</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>useStemToFindDic</name>
+        <description>If this parameter is true, then the annotator will use the stems of the words when searching the sentiment score dictionary; otherwise, original tokens will be used.</description>
+        <type>Boolean</type>
+        <multiValued>false</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>usePosToFindDic</name>
+        <description>If true, the annotator will search the sentiment score dictionary with the part-of-speech tag of the first token of the expression; otherwise, part-of-speech information will be ignored when searching the dictionary.</description>
+        <type>Boolean</type>
+        <multiValued>false</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>posTagset</name>
+        <description>The part-of-speech tagset which is used to annotate com.maalaang.omtwitter.uima.type.TokenAnnotation:posTag. One of the  predefined tagset identifiers can be specified: BROWN_CORPUS, PENN_TREE_BANK, and WORDNET.</description>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>annotationTypeName</name>
+        <description>The name of the annotation type for sentiment scores.</description>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>featureNameId</name>
+        <description>Feature name for id in the given annotation type</description>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>featureNamePositiveScore</name>
+        <description>Feature name for positive score in the given annotation type</description>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>featureNameNegativeScore</name>
+        <description>Feature name for negative score in the given annotation type</description>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>featureNameSubjectiveScore</name>
+        <description>Feature name for subjective score in the given annotation type</description>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>featureNameObjectiveScore</name>
+        <description>Feature name for objective score in the given annotation type</description>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+    </configurationParameters>
+    <configurationParameterSettings/>
+    <typeSystemDescription>
+      <imports>
+        <import name="com.maalaang.omtwitter.uima.type.SentenceAnnotation"/>
+        <import name="com.maalaang.omtwitter.uima.type.TokenAnnotation"/>
+        <import name="com.maalaang.omtwitter.uima.type.SentiWordNetAnnotation"/>
+        <import name="com.maalaang.omtwitter.uima.type.TwitterSentiCorpusAnnotation"/>
+      </imports>
+    </typeSystemDescription>
+    <typePriorities/>
+    <fsIndexCollection/>
+    <capabilities>
+      <capability>
+        <inputs>
+          <type>com.maalaang.omtwitter.uima.type.TokenAnnotation</type>
+          <type>com.maalaang.omtwitter.uima.type.SentenceAnnotation</type>
+          <feature>com.maalaang.omtwitter.uima.type.TokenAnnotation:stem</feature>
+          <feature>com.maalaang.omtwitter.uima.type.TokenAnnotation:posTag</feature>
+          <feature>com.maalaang.omtwitter.uima.type.TokenAnnotation:end</feature>
+          <feature>com.maalaang.omtwitter.uima.type.TokenAnnotation:begin</feature>
+          <feature>com.maalaang.omtwitter.uima.type.SentenceAnnotation:end</feature>
+          <feature>com.maalaang.omtwitter.uima.type.SentenceAnnotation:begin</feature>
+        </inputs>
+        <outputs>
+          <type>com.maalaang.omtwitter.uima.type.TwitterSentiCorpusAnnotation</type>
+          <type>com.maalaang.omtwitter.uima.type.SentiWordNetAnnotation</type>
+          <feature>com.maalaang.omtwitter.uima.type.TwitterSentiCorpusAnnotation:id</feature>
+          <feature>com.maalaang.omtwitter.uima.type.TwitterSentiCorpusAnnotation:objectiveScore</feature>
+          <feature>com.maalaang.omtwitter.uima.type.TwitterSentiCorpusAnnotation:subjectiveScore</feature>
+          <feature>com.maalaang.omtwitter.uima.type.TwitterSentiCorpusAnnotation:negativeScore</feature>
+          <feature>com.maalaang.omtwitter.uima.type.TwitterSentiCorpusAnnotation:positiveScore</feature>
+          <feature>com.maalaang.omtwitter.uima.type.TwitterSentiCorpusAnnotation:end</feature>
+          <feature>com.maalaang.omtwitter.uima.type.TwitterSentiCorpusAnnotation:begin</feature>
+          <feature>com.maalaang.omtwitter.uima.type.SentiWordNetAnnotation:id</feature>
+          <feature>com.maalaang.omtwitter.uima.type.SentiWordNetAnnotation:objectiveScore</feature>
+          <feature>com.maalaang.omtwitter.uima.type.SentiWordNetAnnotation:subjectiveScore</feature>
+          <feature>com.maalaang.omtwitter.uima.type.SentiWordNetAnnotation:negativeScore</feature>
+          <feature>com.maalaang.omtwitter.uima.type.SentiWordNetAnnotation:positiveScore</feature>
+          <feature>com.maalaang.omtwitter.uima.type.SentiWordNetAnnotation:end</feature>
+          <feature>com.maalaang.omtwitter.uima.type.SentiWordNetAnnotation:begin</feature>
+        </outputs>
+        <languagesSupported/>
+      </capability>
+    </capabilities>
+    <operationalProperties>
+      <modifiesCas>true</modifiesCas>
+      <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
+      <outputsNewCASes>false</outputsNewCASes>
+    </operationalProperties>
+  </analysisEngineMetaData>
+  <resourceManagerConfiguration/>
+</analysisEngineDescription>
