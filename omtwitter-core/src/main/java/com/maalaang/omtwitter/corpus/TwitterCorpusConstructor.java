@@ -48,7 +48,10 @@ public class TwitterCorpusConstructor {
 	
 	public void constructCorpusBySearch(Set<String> queries, String rawCorpusFile, int rpp, int max, String lang, int interval, int retryNum, int retryInterval) throws IOException, InterruptedException {
 		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(rawCorpusFile), "UTF-8"));
-		long resultTweetCnt = 0;
+		long resultTweetTotalCnt = 0;
+		
+		int queryTotalNum = queries.size();
+		int queryProcessCnt = 0;
 		
 		SimpleDateFormat dateFormat = new SimpleDateFormat(OMTwitterCorpusFileReader.DATE_FORMAT);
 		
@@ -68,6 +71,7 @@ public class TwitterCorpusConstructor {
 			}
 			
 			// ID AUTHOR DATE QUERY TEXT
+			int resultTweetCnt = 0;
 			for (QueryResult qr : res) {
 				List<Tweet> list = qr.getTweets();
 				for (Tweet t : list) {
@@ -84,15 +88,13 @@ public class TwitterCorpusConstructor {
 					resultTweetCnt++;
 				}
 			}
+			resultTweetTotalCnt += resultTweetCnt;
+			logger.info("[" + (++queryProcessCnt) + "/" + queryTotalNum + "] " + resultTweetCnt + " tweets are returned. total=" + resultTweetTotalCnt);
+			
 			bw.flush();
-			logger.info("total " + resultTweetCnt + " tweets are returned");
 			Thread.sleep(interval);
-				
-			bw.flush();
 		}
-		
 		bw.close();
-		
 		logger.info("done");
 	}
 	
