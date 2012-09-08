@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
 public class OMTweetTokenizer {
 	public final static String REGEX_URL = "(https?|file|ftp)://[\\S]+";
 	public final static String REGEX_USER = "@\\w+";
-	public final static String REGEX_TOKEN = "#?[\\w]+('t)?|[\\p{Punct}oT]+";
+	public final static String REGEX_TOKEN = "#?[\\w-]+('t)?|[\\p{Punct}oT]+";
 	
 	private static Pattern patternUrl = Pattern.compile(REGEX_URL);
 	private static Pattern patternUser = Pattern.compile(REGEX_USER);
