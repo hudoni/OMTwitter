@@ -9,6 +9,7 @@ package com.maalaang.omtwitter.text;
  */
 public interface OMTweetToken {
 	
+	public final static int TOKEN_TYPE_NONE = -1;
 	public final static int TOKEN_TYPE_NORMAL = 0;
 	public final static int TOKEN_TYPE_USER = 1;
 	public final static int TOKEN_TYPE_HASHTAG = 2;

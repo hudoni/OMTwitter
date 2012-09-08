@@ -5,7 +5,6 @@ package com.maalaang.omtwitter.corpus;
 
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Map;
 
 import com.maalaang.omtwitter.model.OMTweet;
 

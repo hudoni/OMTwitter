@@ -1,73 +1,82 @@
 package com.maalaang.omtwitter.corpus;
 
+import java.util.List;
+
+import com.maalaang.omtwitter.model.OMTweet;
+import com.maalaang.omtwitter.text.OMTweetToken;
+import com.maalaang.omtwitter.text.OMTweetTokenizer;
+
 public class FilterHashtagUsage implements TweetFilter {
+	private String filterName = null;
+	private boolean filtered = false;
+	
+	public FilterHashtagUsage(String filterName) {
+		this.filterName = filterName;
+	}
 
-	/*
-	public void tweetCorpusFilterByHashtagUsage(TwitterCorpusReader reader, String out) {
-		try {
-			FileWriter fw = new FileWriter(out);
-			
-			String prevUri = null;
-			int filteredCnt = 0;
-			int totalCnt = 0;
-			
-			while (reader.hasNext()) {
-				reader.next();
+	public void initialize() {
+	}
 
-				boolean filtered = false;
+	public void next(OMTweet tweet) {
+		filtered = false;
 
-				String text = reader.getText().toLowerCase();
-				String query = reader.getQuery().toLowerCase();
+		String query = tweet.getQuery();
+		if (query.charAt(0) != '#') {
+			return;
+		}
 
-				if (query.charAt(0) == '#') {
-					String[] tokens = text.split("\\s+");
-					int hashtagIndex = 0;
+		List<OMTweetToken> tokenList = OMTweetTokenizer.tokenize(tweet.getText());
 
-					for (int i = 0; i < tokens.length; i++) {
-						if (tokens[i].indexOf(query) != -1) {
-							hashtagIndex = i;
-							break;
-						}
-					}
-					String prevToken = null;
-					String nextToken = null;
-
-					if (hashtagIndex > 0) {
-						prevToken = tokens[hashtagIndex - 1];
-					}
-					if (hashtagIndex + 1 < tokens.length) {
-						nextToken = tokens[hashtagIndex + 1];
-					}
-
-					if (nextToken == null || nextToken.indexOf("http://") != -1 || nextToken.indexOf("@") != -1 || nextToken.indexOf("#") != -1) {
-						filtered = true;
-						filteredCnt++;
-					} else if (prevToken != null && (prevToken.indexOf("http://") != -1 || prevToken.indexOf("#") != -1)) {
-						filtered = true;
-						filteredCnt++;
-					}
-				}
-
-				if (!filtered) {
-					fw.write(reader.getQuery());
-					fw.write('\t');
-					fw.write(reader.getUser());
-					fw.write('\t');
-					fw.write(reader.getText());
-					fw.write('\n');
-//				} else {
-//					logger.info("filtered by hashtag usage: " + reader.getUser() + "\t" + reader.getText());
-					
-				}
-				totalCnt++;
+		int idx = 0;
+		for (OMTweetToken tok : tokenList) {
+			if (tok.getType() == OMTweetToken.TOKEN_TYPE_HASHTAG && tok.getText().equalsIgnoreCase(query)) {
+				break;
 			}
+			idx++;
+		}
+		if (idx == tokenList.size()) {
+			throw new IllegalStateException("cannot find query hashtag in the tweet - query=" + query + ", tweet=" + tweet.getText());
+		}
 
-			fw.close();
-			logger.info("'" + out + "', which was filtered by hashtag usage, has been created (" + filteredCnt + " / " + totalCnt + " are filtered out)");
+		int prevTokType;
+		if (idx > 0) {
+			prevTokType = tokenList.get(idx - 1).getType();
+		} else {
+			prevTokType = OMTweetToken.TOKEN_TYPE_NONE;
+		}
 
-		} catch (IOException e) {
-			e.printStackTrace();
+		int nextTokType;
+		if (idx < tokenList.size() - 1) {
+			nextTokType = tokenList.get(idx + 1).getType();
+		} else {
+			nextTokType = OMTweetToken.TOKEN_TYPE_NONE;
+		}
+
+
+		switch (nextTokType) {
+		case OMTweetToken.TOKEN_TYPE_NONE:
+		case OMTweetToken.TOKEN_TYPE_URL:
+		case OMTweetToken.TOKEN_TYPE_USER:
+		case OMTweetToken.TOKEN_TYPE_HASHTAG:
+			filtered = true;
+		}
+
+		switch (prevTokType) {
+		case OMTweetToken.TOKEN_TYPE_URL:
+		case OMTweetToken.TOKEN_TYPE_HASHTAG:
+			filtered = true;
 		}
 	}
-	*/
+
+	public boolean isFilteredOut() {
+		return filtered; 
+	}
+
+	public String getFilterName() {
+		return filterName;
+	}
+
+	public void close() {
+		
+	}
 }
