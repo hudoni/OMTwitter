@@ -3,7 +3,10 @@
  */
 package com.maalaang.omtwitter.corpus;
 
+import java.util.List;
+
 import com.maalaang.omtwitter.model.OMTweet;
+import com.maalaang.omtwitter.text.OMTweetToken;
 
 /**
  * @author Sangwon Park
@@ -13,7 +16,7 @@ public interface TweetFilter {
 	
 	public void initialize();
 	
-	public void next(OMTweet tweet);
+	public void next(OMTweet tweet, List<OMTweetToken> tokenList);
 	
 	public boolean isFilteredOut();
 	

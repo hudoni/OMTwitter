@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.maalaang.omtwitter.model.OMTweet;
 import com.maalaang.omtwitter.text.OMTweetToken;
-import com.maalaang.omtwitter.text.OMTweetTokenizer;
 
 public class FilterHashtagUsage implements TweetFilter {
 	private boolean filtered = false;
@@ -15,15 +14,13 @@ public class FilterHashtagUsage implements TweetFilter {
 	public void initialize() {
 	}
 
-	public void next(OMTweet tweet) {
+	public void next(OMTweet tweet, List<OMTweetToken> tokenList) {
 		filtered = false;
 
 		String query = tweet.getQuery();
 		if (query.charAt(0) != '#') {
 			return;
 		}
-
-		List<OMTweetToken> tokenList = OMTweetTokenizer.tokenize(tweet.getText());
 
 		int idx = 0;
 		for (OMTweetToken tok : tokenList) {

@@ -3,124 +3,102 @@
  */
 package com.maalaang.omtwitter.corpus;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import com.maalaang.omtwitter.model.OMTweet;
+import com.maalaang.omtwitter.text.OMTweetToken;
+
 /**
  * @author Sangwon Park
  *
  */
 public class FilterDomainRelevance implements TweetFilter {
-	/*
-	public void tweetCorpusFilterByRelevance(TwitterCorpusReader reader, String out, String scoreFile, double threshold, String splitPattern) {
-		try {
-			Map<String, Double> scoreMap = CollectionTextReader.readMapStringDouble(scoreFile);
-			
-			Set<String> stopwordSet = stopwordSet();
-			int tweetCnt = 0;
-			
-			ArrayList<Double> scoreList = new ArrayList<Double>();
-			
-			while (reader.hasNext()) {
-				reader.next();
-				tweetCnt++;
-				
-				int wordCnt = 0;
-				double score = 0.0;
-				String text = reader.getText().toLowerCase();
-				
-				Matcher urlMatcher = pURL.matcher(text);
-				text = urlMatcher.replaceAll("URL");
-				Matcher userMatcher = pUser.matcher(text);
-				text = userMatcher.replaceAll("USER");
-				
-				String[] tokens = text.split(splitPattern);
-				Double value = null;
-				
-				for (String t : tokens) {
-					if (stopwordSet.contains(t)) {
-						continue;
-					}
-					wordCnt++;
-					
-					value = scoreMap.get(t);
-					if (value != null) {
-						score += value;
-					}
-				}
-				if (wordCnt != 0) {
-					score = score / wordCnt;
-				} else {
-					score = 0.0;
-				}
-				
-				scoreList.add(score);
-			}
-			
-			Collections.sort(scoreList);
-			
-			double thresholdScore = scoreList.get((int)(tweetCnt * threshold));
-			
-			logger.info("found threshold_score=" + thresholdScore + " (threshold=" + threshold + ")");
-			logger.info("start filtering");
-			
-			reader.reset();
-			FileWriter fw = new FileWriter(out);
-			
-			while (reader.hasNext()) {
-				reader.next();
-				
-				int wordCnt = 0;
-				double score = 0.0;
-				String text = reader.getText().toLowerCase();
-				
-				Matcher urlMatcher = pURL.matcher(text);
-				text = urlMatcher.replaceAll("URL");
-				
-				Matcher userMatcher = pUser.matcher(text);
-				text = userMatcher.replaceAll("USER");
-				
-				String[] tokens = text.split(splitPattern);
-				Double value = null;
-					
-				for (String t : tokens) {
-					if (stopwordSet.contains(t)) {
-						continue;
-					}
-					wordCnt++;
-					
-					value = scoreMap.get(t);
-					if (value != null) {
-						score += value;
-					}
-				}
-				if (wordCnt != 0) {
-					score = score / wordCnt;
-				} else {
-					score = 0.0;
-				}
-				
-				if (score >= thresholdScore) {
-					String query = reader.getQuery();
-					if (query != null) {
-						fw.write(reader.getQuery());
-						fw.write('\t');
-					}
-					fw.write(reader.getUser());
-					fw.write('\t');
-					fw.write(reader.getText());
-					fw.write('\n');
-				} else {
-					logger.info("filtered by relevance: " + reader.getQuery() + "\t" + reader.getText());
-				}
-			}
-			
-			reader.close();
-			fw.close();
-			
-			logger.info("'" + out + "' filtered by relevance has been created (based on " + scoreFile + ")");
-			
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	
+	private Map<String,Double> wrsMap = null;
+	private Set<String> stopwords = null;
+	private double relevance = 0.0;
+	private int windowSize = 0;
+	private double startWindowScore = 0.0;
+	
+	private LinkedList<Double> windowQueue = null;
+	private double windowScoreSum = 0.0;
+	
+	private boolean filtered = false;
+	private int processCnt = 0;
+	private boolean useWindowScore = false;
+	
+	public FilterDomainRelevance(Map<String,Double> wrsMap, Set<String> stopwords, double relevance, int windowSize, double startWindowScore) {
+		this.wrsMap = wrsMap;
+		this.stopwords = stopwords;
+		this.relevance = relevance;
+		this.windowSize = windowSize;
+		this.startWindowScore = startWindowScore;
 	}
-	*/
 
+	public void initialize() {
+		windowQueue = new LinkedList<Double>();
+	}
+
+	public void next(OMTweet tweet, List<OMTweetToken> tokenList) {
+		double rs = relevanceScore(tokenList);
+		double threshold = useWindowScore && windowSize > 0 ? windowScoreSum / (double) windowSize : startWindowScore;
+		threshold *= relevance;
+		
+		if (rs > threshold) {
+			filtered = false;
+		} else {
+			filtered = true;
+		}
+		
+		windowScoreSum += rs;
+		windowQueue.addLast(rs);
+		
+		if (windowQueue.size() > windowSize) {
+			windowScoreSum -= windowQueue.pollFirst();
+		}
+		
+		if (!useWindowScore && ++processCnt >= windowSize) {
+			useWindowScore = true;
+		}
+		
+	}
+
+	public boolean isFilteredOut() {
+		return filtered;
+	}
+
+	public void close() {
+		windowQueue.clear();
+		windowQueue = null;
+	}
+	
+	private double relevanceScore(List<OMTweetToken> tokenList) {
+		int tokenCnt = tokenList.size();
+		double sum = 0.0;
+		Double wrs = null;
+		
+		for (OMTweetToken tok : tokenList) {
+			switch (tok.getType()) {
+			case OMTweetToken.TOKEN_TYPE_HASHTAG:
+				wrs = wrsMap.get(tok.getText().substring(1));
+				if (wrs != null) {
+					sum += wrs;
+				}
+				break;
+				
+			case OMTweetToken.TOKEN_TYPE_NORMAL:
+				if (!stopwords.contains(tok.getText())) {
+					if ((wrs = wrsMap.get(tok.getText())) != null) {
+						sum += wrs;
+					}
+				}
+				break;
+			}
+		}
+		
+		return tokenCnt != 0 ? sum / (double) tokenCnt : 0.0;
+	}
 }
