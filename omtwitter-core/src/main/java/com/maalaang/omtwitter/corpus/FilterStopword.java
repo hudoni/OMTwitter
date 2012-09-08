@@ -3,56 +3,50 @@
  */
 package com.maalaang.omtwitter.corpus;
 
+import java.util.List;
+import java.util.Set;
+
+import com.maalaang.omtwitter.model.OMTweet;
+import com.maalaang.omtwitter.text.OMTweetToken;
+
 /**
  * @author Sangwon Park
  *
  */
-public class FilterStopword {
-	/*
-	public void tweetCorpusFilterByStopword(TwitterCorpusReader reader, String out, int threshold) {
-		try {
-			Set<String> stopwordSet = stopwordSet();
-			
-			FileWriter fw = new FileWriter(out);
-			
-			while (reader.hasNext()) {
-				reader.next();
-				
-				String query = reader.getQuery();
-				String text = reader.getText().toLowerCase();
-				text = pURL.matcher(text).replaceAll("URL");
-				
-				String[] tokens = text.split("\\s+");
-				int stopwordCnt = 0;
-				
-				for (String tok : tokens) {
-					if (stopwordSet.contains(tok)) {
-						if (++stopwordCnt >= threshold) {
-							break;
-						}
-					}
-				}
-				
-				if (stopwordCnt >= threshold) {
-					if (query != null) {
-						fw.write(query);
-						fw.write('\t');
-					}
-					fw.write(reader.getUser());
-					fw.write('\t');
-					fw.write(reader.getText());
-					fw.write('\n');
-				} else {
-					logger.info("filtered by stopwords: " + reader.getText());
+public class FilterStopword implements TweetFilter {
+	
+	private Set<String> stopwords = null;
+	private int stopwordNum = 0;
+	
+	private boolean filtered = false;
+	
+	public FilterStopword(Set<String> stopwords, int stopwordNum) {
+		this.stopwords = stopwords;
+		this.stopwordNum = stopwordNum;
+	}
+	
+	public void initialize() {
+		
+	}
+
+	public void next(OMTweet tweet, List<OMTweetToken> tokenList) {
+		int cnt = 0;
+		for (OMTweetToken tok : tokenList) {
+			if (stopwords.contains(tok)) {
+				if (++cnt > stopwordNum) {
+					filtered = true;
+					break;
 				}
 			}
-			
-			fw.close();
-			logger.info("'" + out + "' filtered by stopwords has been created (threshold=" + threshold + ")");
-			
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
+		filtered = false;
 	}
-	*/
+
+	public boolean isFilteredOut() {
+		return filtered;
+	}
+
+	public void close() {
+		
+	}
 }
