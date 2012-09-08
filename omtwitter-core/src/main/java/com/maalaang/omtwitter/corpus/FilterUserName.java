@@ -19,12 +19,10 @@ public class FilterUserName implements TweetFilter {
 	private int windowSize = 0;
 	private int userPostLimit = 0;
 	private boolean filtered = false;
-	private String filterName = null;
 	
-	public FilterUserName(int windowSize, int userPostLimit, String filterName) {
+	public FilterUserName(int windowSize, int userPostLimit) {
 		this.windowSize = windowSize;
 		this.userPostLimit = userPostLimit;
-		this.filterName = filterName;
 	}
 
 	public void initialize() {
@@ -72,9 +70,5 @@ public class FilterUserName implements TweetFilter {
 		userPostFreqMap = null;
 		userNameQueue.clear();
 		userNameQueue = null;
-	}
-	
-	public String getFilterName() {
-		return filterName;
 	}
 }

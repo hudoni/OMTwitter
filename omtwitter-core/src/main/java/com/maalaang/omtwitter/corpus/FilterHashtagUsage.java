@@ -7,11 +7,9 @@ import com.maalaang.omtwitter.text.OMTweetToken;
 import com.maalaang.omtwitter.text.OMTweetTokenizer;
 
 public class FilterHashtagUsage implements TweetFilter {
-	private String filterName = null;
 	private boolean filtered = false;
 	
-	public FilterHashtagUsage(String filterName) {
-		this.filterName = filterName;
+	public FilterHashtagUsage() {
 	}
 
 	public void initialize() {
@@ -70,10 +68,6 @@ public class FilterHashtagUsage implements TweetFilter {
 
 	public boolean isFilteredOut() {
 		return filtered; 
-	}
-
-	public String getFilterName() {
-		return filterName;
 	}
 
 	public void close() {

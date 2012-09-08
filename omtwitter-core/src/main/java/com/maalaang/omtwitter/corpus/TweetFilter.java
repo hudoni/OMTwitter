@@ -17,8 +17,6 @@ public interface TweetFilter {
 	
 	public boolean isFilteredOut();
 	
-	public String getFilterName();
-	
 	public void close();
 
 }
