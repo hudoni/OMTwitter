@@ -9,12 +9,12 @@ import java.text.SimpleDateFormat;
 
 import org.apache.log4j.Logger;
 
-import com.maalaang.omtwitter.io.OMTwitterCorpusFileReader;
-
 import twitter4j.Status;
 import twitter4j.StatusDeletionNotice;
 import twitter4j.StatusListener;
 import twitter4j.User;
+
+import com.maalaang.omtwitter.model.OMTweet;
 
 /**
  * Insert status to MySQL database.
@@ -37,7 +37,7 @@ public class DBInsertStatusListener implements StatusListener {
 	
 	public DBInsertStatusListener(String host, String db, String table, String user, String passwd) {
 		this.logger = Logger.getLogger(getClass());
-		dateFormat = new SimpleDateFormat(OMTwitterCorpusFileReader.DATE_FORMAT);
+		dateFormat = new SimpleDateFormat(OMTweet.DATE_FORMAT);
 		
 		try {
 			Class.forName("com.mysql.jdbc.Driver");

@@ -1,10 +1,8 @@
 package com.maalaang.omtwitter.corpus;
 
-import java.io.BufferedWriter;
-import java.io.FileOutputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.text.SimpleDateFormat;
+import java.io.UnsupportedEncodingException;
 
 import org.apache.log4j.Logger;
 
@@ -12,49 +10,48 @@ import twitter4j.Status;
 import twitter4j.StatusDeletionNotice;
 import twitter4j.StatusListener;
 
-import com.maalaang.omtwitter.io.OMTwitterCorpusFileReader;
+import com.maalaang.omtwitter.io.OMTwitterCorpusFile;
+import com.maalaang.omtwitter.io.OMTwitterCorpusFileWriter;
+import com.maalaang.omtwitter.model.OMTweet;
+import com.maalaang.omtwitter.model.OMTweet_Impl;
 
 public class TextWriteStatusListener implements StatusListener {
 	private final int LOG_TWEET_PROCESS_CNT = 1000;
 	
 	private Logger logger = null;
-	private BufferedWriter bw = null;
+	private OMTwitterCorpusFileWriter corpusWriter = null;
 	
 	private int tweetCnt = 0;
 	private String lang = null;
-	private SimpleDateFormat dateFormat = null;
 	
 	public TextWriteStatusListener(String file, String lang) {
 		this.logger = Logger.getLogger(getClass());
 		try {
-			this.bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8"));
-		} catch (Exception e) {
-			logger.error(e);
+			this.corpusWriter = new OMTwitterCorpusFileWriter(file, new int[] {
+					OMTwitterCorpusFile.FIELD_ID,
+					OMTwitterCorpusFile.FIELD_AUTHOR,
+					OMTwitterCorpusFile.FIELD_DATE,
+					OMTwitterCorpusFile.FIELD_TEXT
+			});
+		} catch (UnsupportedEncodingException e) {
+			throw new IllegalArgumentException(e);
+		} catch (FileNotFoundException e) {
+			throw new IllegalArgumentException(e);
 		}
 		this.lang = lang;
-		dateFormat = new SimpleDateFormat(OMTwitterCorpusFileReader.DATE_FORMAT);
 	}
 	
 	public void onStatus(Status status) {
+		OMTweet tweet = new OMTweet_Impl(String.valueOf(status.getId()), status.getUser().getName().replaceAll("\\s+", " "), status.getCreatedAt(), status.getText().replaceAll("\\s+", " "));
 		if (lang != null && status.getUser().getLang().equals(lang)) {
 			try {
-				// ID AUTHOR DATE TEXT
-				bw.write(String.valueOf(status.getId()));
-				bw.write('\t');
-				bw.write(status.getUser().getName().replaceAll("\\s+", " "));
-				bw.write('\t');
-				bw.write(dateFormat.format(status.getCreatedAt()));
-				bw.write('\t');
-				bw.write(status.getText().replaceAll("\\s+", " "));
-				bw.write('\n');
-				bw.flush();
-				
+				corpusWriter.write(tweet);
 			} catch (IOException e) {
 				logger.error(e);
 			}
 			
 			if (tweetCnt % LOG_TWEET_PROCESS_CNT == 0) {
-				logger.info(tweetCnt + ": " + status.getUser().getName() + "\t" + status.getText().replaceAll("\\s+", " "));
+				logger.info(tweetCnt + ": " + tweet.getAuthor() + "\t" + tweet.getText());
 			}
 			
 			tweetCnt++;

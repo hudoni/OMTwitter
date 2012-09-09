@@ -12,6 +12,7 @@ import com.maalaang.omtwitter.corpus.FilterHashtagUsage;
 import com.maalaang.omtwitter.corpus.FilterUserName;
 import com.maalaang.omtwitter.corpus.TweetFilterPipeline;
 import com.maalaang.omtwitter.io.CollectionTextReader;
+import com.maalaang.omtwitter.io.OMTwitterCorpusFile;
 import com.maalaang.omtwitter.io.OMTwitterCorpusFileReader;
 import com.maalaang.omtwitter.io.OMTwitterReader;
 import com.maalaang.omtwitter.model.OMTweet;
@@ -27,11 +28,11 @@ public class ConstructTwitterNamedEntityCorpus {
 			Map<String,Double> wrsMap = CollectionTextReader.readMapStringDouble(prop.getProperty("word.relevance.score.file"));
 			Set<String> stopwords = CollectionTextReader.readSetString(prop.getProperty("stopword.set.file"));
 			
-			int[] searchCorpusFields = new int[] { OMTwitterCorpusFileReader.FIELD_ID,
-					OMTwitterCorpusFileReader.FIELD_AUTHOR,
-					OMTwitterCorpusFileReader.FIELD_DATE,
-					OMTwitterCorpusFileReader.FIELD_QUERY,
-					OMTwitterCorpusFileReader.FIELD_TEXT };
+			int[] searchCorpusFields = new int[] { OMTwitterCorpusFile.FIELD_ID,
+					OMTwitterCorpusFile.FIELD_AUTHOR,
+					OMTwitterCorpusFile.FIELD_DATE,
+					OMTwitterCorpusFile.FIELD_QUERY,
+					OMTwitterCorpusFile.FIELD_TEXT };
 			OMTwitterReader searchCorpusReader = new OMTwitterCorpusFileReader(prop.getProperty("raw.corpus.search.file"), searchCorpusFields);
 			
 			TweetFilterPipeline filterPipe = new TweetFilterPipeline();
@@ -46,10 +47,10 @@ public class ConstructTwitterNamedEntityCorpus {
 				}
 			}
 			
-			int[] sampleCorpusFields = new int[] { OMTwitterCorpusFileReader.FIELD_ID,
-					OMTwitterCorpusFileReader.FIELD_AUTHOR,
-					OMTwitterCorpusFileReader.FIELD_DATE,
-					OMTwitterCorpusFileReader.FIELD_TEXT };
+			int[] sampleCorpusFields = new int[] { OMTwitterCorpusFile.FIELD_ID,
+					OMTwitterCorpusFile.FIELD_AUTHOR,
+					OMTwitterCorpusFile.FIELD_DATE,
+					OMTwitterCorpusFile.FIELD_TEXT };
 			OMTwitterReader sampleCorpusReader = new OMTwitterCorpusFileReader(prop.getProperty("raw.corpus.sample.file"), sampleCorpusFields);
 			
 		} catch (Exception e) {

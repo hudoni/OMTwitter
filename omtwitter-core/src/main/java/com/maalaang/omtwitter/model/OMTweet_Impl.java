@@ -3,15 +3,21 @@
  */
 package com.maalaang.omtwitter.model;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * @author Sangwon Park
  *
  */
 public class OMTweet_Impl implements OMTweet {
 	
+	protected static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(OMTweet.DATE_FORMAT);
+	
 	protected String id;
 	protected String author;
-	protected String date;
+	protected Date date;
 	protected String text;
 	protected String query;
 	protected int polarity;
@@ -28,15 +34,34 @@ public class OMTweet_Impl implements OMTweet {
 		this(id, author, null, text, null, POLARITY_NOT_SPECIFIED);
 	}
 	
-	public OMTweet_Impl(String id, String author, String date, String text) {
+	public OMTweet_Impl(String id, String author, Date date, String text) {
 		this(id, author, date, text, null, POLARITY_NOT_SPECIFIED);
 	}
 	
-	public OMTweet_Impl(String id, String author, String date, String text, String query) {
+	public OMTweet_Impl(String id, String author, String date, String text) {
+		this(id, author, null, text, null, POLARITY_NOT_SPECIFIED);
+		try {
+			this.date = DATE_FORMAT.parse(date);
+		} catch (ParseException e) {
+			throw new IllegalArgumentException(e);
+		}
+	}
+	
+	public OMTweet_Impl(String id, String author, Date date, String text, String query) {
 		this(id, author, date, text, query, POLARITY_NOT_SPECIFIED);
 	}
 	
-	public OMTweet_Impl(String id, String author, String date, String text, String query, int polarity) {
+	public OMTweet_Impl(String id, String author, String date, String text, String query) {
+		this(id, author, null, text, query, POLARITY_NOT_SPECIFIED);
+		
+		try {
+			this.date = DATE_FORMAT.parse(date);
+		} catch (ParseException e) {
+			throw new IllegalArgumentException(e);
+		}
+	}
+	
+	public OMTweet_Impl(String id, String author, Date date, String text, String query, int polarity) {
 		this.id = id;
 		this.author = author;
 		this.date = date;
@@ -92,14 +117,32 @@ public class OMTweet_Impl implements OMTweet {
 	 * @see com.maalaang.omtwitter.model.OMTweet#setDate(java.lang.String)
 	 */
 	public void setDate(String date) {
+		try {
+			this.date = DATE_FORMAT.parse(date);
+		} catch (ParseException e) {
+			throw new IllegalArgumentException(e);
+		}
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.maalaang.omtwitter.model.OMTweet#setDate(java.util.Date)
+	 */
+	public void setDate(Date date) {
 		this.date = date;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.maalaang.omtwitter.model.OMTweet#getDate()
 	 */
-	public String getDate() {
+	public Date getDate() {
 		return date;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.maalaang.omtwitter.model.OMTweet#getDateString()
+	 */
+	public String getDateString() {
+		return DATE_FORMAT.format(date);
 	}
 
 	/* (non-Javadoc)

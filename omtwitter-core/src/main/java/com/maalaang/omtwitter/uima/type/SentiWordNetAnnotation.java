@@ -3,10 +3,9 @@
 /* First created by JCasGen Tue Aug 14 20:01:44 CEST 2012 */
 package com.maalaang.omtwitter.uima.type;
 
-import org.apache.uima.jcas.JCas; 
+import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 import org.apache.uima.jcas.cas.TOP_Type;
-
 import org.apache.uima.jcas.tcas.Annotation;
 
 

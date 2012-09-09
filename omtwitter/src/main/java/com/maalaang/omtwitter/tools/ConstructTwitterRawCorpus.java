@@ -14,6 +14,7 @@ import com.maalaang.omtwitter.corpus.TwitterCorpusStat;
 import com.maalaang.omtwitter.corpus.TwitterQueryGenerator;
 import com.maalaang.omtwitter.io.CollectionTextReader;
 import com.maalaang.omtwitter.io.CollectionTextWriter;
+import com.maalaang.omtwitter.io.OMTwitterCorpusFile;
 import com.maalaang.omtwitter.io.OMTwitterCorpusFileReader;
 
 public class ConstructTwitterRawCorpus {
@@ -41,11 +42,11 @@ public class ConstructTwitterRawCorpus {
 					Integer.parseInt(prop.getProperty("raw.corpus.search.retry.num")), Integer.parseInt(prop.getProperty("raw.corpus.search.retry.interval")));
 			queryToResourceMap = null;
 			
-			int[] searchCorpusFields = new int[] { OMTwitterCorpusFileReader.FIELD_ID,
-					OMTwitterCorpusFileReader.FIELD_AUTHOR,
-					OMTwitterCorpusFileReader.FIELD_DATE,
-					OMTwitterCorpusFileReader.FIELD_QUERY,
-					OMTwitterCorpusFileReader.FIELD_TEXT };
+			int[] searchCorpusFields = new int[] { OMTwitterCorpusFile.FIELD_ID,
+					OMTwitterCorpusFile.FIELD_AUTHOR,
+					OMTwitterCorpusFile.FIELD_DATE,
+					OMTwitterCorpusFile.FIELD_QUERY,
+					OMTwitterCorpusFile.FIELD_TEXT };
 			
 			Map<String,Integer> searchUserStatusFreqMap = TwitterCorpusStat.userStatusFreq(new OMTwitterCorpusFileReader(prop.getProperty("raw.corpus.search.file"), searchCorpusFields));
 			CollectionTextWriter.writeMapStringInteger(searchUserStatusFreqMap, prop.getProperty("raw.corpus.search.user.freq.file"), true);
@@ -53,10 +54,10 @@ public class ConstructTwitterRawCorpus {
 			// sample stream
 			tcc.openTwitterSampleStream(new TextWriteStatusListener(prop.getProperty("raw.corpus.sample.file"), prop.getProperty("raw.corpus.sample.lang")), 60*60*24);
 			
-			int[] sampleCorpusFields = new int[] { OMTwitterCorpusFileReader.FIELD_ID,
-					OMTwitterCorpusFileReader.FIELD_AUTHOR,
-					OMTwitterCorpusFileReader.FIELD_DATE,
-					OMTwitterCorpusFileReader.FIELD_TEXT };
+			int[] sampleCorpusFields = new int[] { OMTwitterCorpusFile.FIELD_ID,
+					OMTwitterCorpusFile.FIELD_AUTHOR,
+					OMTwitterCorpusFile.FIELD_DATE,
+					OMTwitterCorpusFile.FIELD_TEXT };
 			
 			Map<String,Integer> sampleUserStatusFreqMap = TwitterCorpusStat.userStatusFreq(new OMTwitterCorpusFileReader(prop.getProperty("raw.corpus.sample.file"), sampleCorpusFields));
 			CollectionTextWriter.writeMapStringInteger(sampleUserStatusFreqMap, prop.getProperty("raw.corpus.sample.user.freq.file"), true);

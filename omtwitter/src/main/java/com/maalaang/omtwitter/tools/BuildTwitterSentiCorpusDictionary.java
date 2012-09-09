@@ -12,13 +12,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Map.Entry;
+import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
 
 import org.apache.log4j.Logger;
 
+import com.maalaang.omtwitter.io.OMTwitterCorpusFile;
 import com.maalaang.omtwitter.io.OMTwitterCorpusFileReader;
 import com.maalaang.omtwitter.io.OMTwitterReader;
 import com.maalaang.omtwitter.model.OMTweet;
@@ -49,10 +50,10 @@ public class BuildTwitterSentiCorpusDictionary {
 			Properties prop = new Properties();
 			prop.load(new InputStreamReader(new FileInputStream(args[0]), "UTF-8"));
 		
-			int[] corpusFields = new int[] { OMTwitterCorpusFileReader.FIELD_POLARITY,
-					OMTwitterCorpusFileReader.FIELD_QUERY,
-					OMTwitterCorpusFileReader.FIELD_AUTHOR,
-					OMTwitterCorpusFileReader.FIELD_TEXT };
+			int[] corpusFields = new int[] { OMTwitterCorpusFile.FIELD_POLARITY,
+					OMTwitterCorpusFile.FIELD_QUERY,
+					OMTwitterCorpusFile.FIELD_AUTHOR,
+					OMTwitterCorpusFile.FIELD_TEXT };
 			
 			builder.buildDicFile(new OMTwitterCorpusFileReader(prop.getProperty("sentiCorpusFile"), corpusFields), prop.getProperty("sentiCorpusDicFile"));
 			builder.createObjectFile(prop.getProperty("sentiCorpusDicFile"), prop.getProperty("sentiCorpusDicObjectFile"));

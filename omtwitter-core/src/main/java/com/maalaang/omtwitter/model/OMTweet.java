@@ -3,6 +3,8 @@
  */
 package com.maalaang.omtwitter.model;
 
+import java.util.Date;
+
 /**
  * @author Sangwon Park
  */
@@ -22,6 +24,8 @@ public interface OMTweet {
 	public static final String POLARITY_STR_OBJECTIVE = "OBJ";
 	public static final String POLARITY_STR_NOT_SPECIFIED = "NOT SPECIFIED";
 	
+	public static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssz";
+	
 	public void setId(String id);
 	public String getId();
 	
@@ -31,8 +35,10 @@ public interface OMTweet {
 	public void setText(String text);
 	public String getText();
 	
+	public void setDate(Date date);
 	public void setDate(String date);
-	public String getDate();
+	public Date getDate();
+	public String getDateString();
 	
 	public void setPolarity(int polarity);
 	public void setPolarity(String polarity);

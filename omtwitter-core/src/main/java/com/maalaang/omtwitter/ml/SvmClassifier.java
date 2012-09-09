@@ -4,7 +4,6 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.text.ParseException;
 
-
 import jnisvmlight.FeatureVector;
 import jnisvmlight.SVMLightModel;
 

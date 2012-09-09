@@ -14,50 +14,30 @@ import com.maalaang.omtwitter.model.OMTweet_Impl;
 
 public class OMTwitterCorpusFileReader implements OMTwitterReader {
 	
-	public static final String DEFAULT_FILE_CHARSET = "UTF8";
-	
-	public static final String DEFAULT_SPLIT_REGEX = "\t";
-	
-	public static final int FIELD_IGNORE = 0;
-	public static final int FIELD_ID = 1;
-	public static final int FIELD_AUTHOR = 2;
-	public static final int FIELD_TEXT = 3;
-	public static final int FIELD_DATE = 4;
-	public static final int FIELD_POLARITY = 5;
-	public static final int FIELD_QUERY = 6;
-	
-	public static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssz";
-	
-	public static final int[] DEFAULT_FIELDS = { FIELD_ID, FIELD_AUTHOR, FIELD_TEXT, FIELD_DATE, FIELD_POLARITY, FIELD_QUERY };
-	
-	public static final String[] FIELD_NAMES = { "IGNORE", "ID", "AUTHOR", "TEXT", "DATE", "POLARITY", "QUERY" };
-	
-	public static final String EMPTY_FIELD_STR = "NULL";
-	
 	private BufferedReader br = null;
 	
-	private String splitRegex = null;
+	private String fieldDelimiter = null;
 	
 	private int[] fields = null;
 	
 	private Logger logger = null;
 	
 	public OMTwitterCorpusFileReader(String file) throws UnsupportedEncodingException, FileNotFoundException {
-		this(file, DEFAULT_SPLIT_REGEX, DEFAULT_FIELDS);
+		this(file, OMTwitterCorpusFile.DEFAULT_FIELD_DELIM, OMTwitterCorpusFile.DEFAULT_FIELDS);
 	}
 	
 	public OMTwitterCorpusFileReader(String file, int[] fields) throws UnsupportedEncodingException, FileNotFoundException {
-		this(file, DEFAULT_SPLIT_REGEX, fields);
+		this(file, OMTwitterCorpusFile.DEFAULT_FIELD_DELIM, fields);
 	}
 	
-	public OMTwitterCorpusFileReader(String file, String splitRegex) throws UnsupportedEncodingException, FileNotFoundException {
-		this(file, splitRegex, DEFAULT_FIELDS);
+	public OMTwitterCorpusFileReader(String file, String fieldDelimiter) throws UnsupportedEncodingException, FileNotFoundException {
+		this(file, fieldDelimiter, OMTwitterCorpusFile.DEFAULT_FIELDS);
 	}
 	
-	public OMTwitterCorpusFileReader(String file, String splitRegex, int[] fields) throws UnsupportedEncodingException, FileNotFoundException {
-		this.br = new BufferedReader(new InputStreamReader(new FileInputStream(file), DEFAULT_FILE_CHARSET));
+	public OMTwitterCorpusFileReader(String file, String fieldDelimiter, int[] fields) throws UnsupportedEncodingException, FileNotFoundException {
+		this.br = new BufferedReader(new InputStreamReader(new FileInputStream(file), OMTwitterCorpusFile.FILE_CHARSET));
 		this.fields = fields;
-		this.splitRegex = splitRegex;
+		this.fieldDelimiter = fieldDelimiter;
 		this.logger = Logger.getLogger(this.getClass());
 		
 		logger.info("read from the twitter corpus file: " + file);
@@ -89,32 +69,32 @@ public class OMTwitterCorpusFileReader implements OMTwitterReader {
 		
 		OMTweet_Impl tweet = new OMTweet_Impl();
 		
-		String[] tokens = line.split(splitRegex);
+		String[] tokens = line.split(fieldDelimiter);
 		
 		for (int i = 0; i < tokens.length && i < fields.length; i++) {
-			if (tokens[i].equalsIgnoreCase(EMPTY_FIELD_STR)) {
+			if (tokens[i].equalsIgnoreCase(OMTwitterCorpusFile.FIELD_EMPTY_STR)) {
 				tokens[i] = null;
 			}
 			
 			switch (fields[i]) {
-			case FIELD_IGNORE:	
+			case OMTwitterCorpusFile.FIELD_IGNORE:	
 				break;
-			case FIELD_ID:
+			case OMTwitterCorpusFile.FIELD_ID:
 				tweet.setId(tokens[i]);
 				break;
-			case FIELD_AUTHOR:
+			case OMTwitterCorpusFile.FIELD_AUTHOR:
 				tweet.setAuthor(tokens[i]);
 				break;
-			case FIELD_TEXT:
+			case OMTwitterCorpusFile.FIELD_TEXT:
 				tweet.setText(tokens[i]);
 				break;
-			case FIELD_DATE:
+			case OMTwitterCorpusFile.FIELD_DATE:
 				tweet.setDate(tokens[i]);
 				break;
-			case FIELD_POLARITY:
+			case OMTwitterCorpusFile.FIELD_POLARITY:
 				tweet.setPolarity(tokens[i]);
 				break;
-			case FIELD_QUERY:
+			case OMTwitterCorpusFile.FIELD_QUERY:
 				tweet.setQuery(tokens[i]);
 				break;
 			default:
@@ -138,12 +118,11 @@ public class OMTwitterCorpusFileReader implements OMTwitterReader {
 	}
 	
 	public static int fieldNameToId(String fieldName) {
-		for (int i = 0; i < FIELD_NAMES.length; i++) {
-			if (FIELD_NAMES[i].equals(fieldName)) {
+		for (int i = 0; i < OMTwitterCorpusFile.FIELD_NAMES.length; i++) {
+			if (OMTwitterCorpusFile.FIELD_NAMES[i].equals(fieldName)) {
 				return i;
 			}
 		}
 		throw new IllegalArgumentException();
 	}
-
 }
