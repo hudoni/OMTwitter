@@ -4,25 +4,25 @@ public class ConstructTwitterNamedEntityCorpus {
 	
 	public static void main(String[] args) {
 			// corpus refiner
-			helper.tweetCorpusUserFilterList(new TwitterDBPediaCorpusReader(twitterDomainCorpusFile), twitterDomainCorpusFile + ".user.filter.list", 1);
-			helper.tweetCorpusFilterByUser(new TwitterDBPediaCorpusReader(twitterDomainCorpusFile), twitterDomainCorpusFile + ".refined.user", twitterDomainCorpusFile + ".user.filter.list");
-			helper.tweetCorpusFilterByHashtagUsage(new TwitterDBPediaCorpusReader(twitterDomainCorpusFile + ".refined.user"), twitterDomainCorpusFile + ".refined.user.hashtag");			helper.tweetCorpusFilterByCosineSimilarity(new TwitterDBPediaCorpusReader(twitterDomainCorpusFile + ".refined.user.hashtag"), twitterDomainCorpusFile + ".refined.user.hashtag.similarity");
-			helper.tweetCorpusFilterByRelevance(new TwitterDBPediaCorpusReader(twitterDomainCorpusFile + ".refined.user.hashtag.similarity"), twitterDomainCorpusFile + ".refined.user.hashtag.similarity.relevance.0.8", dbpediaInfoboxValueInDomainScoreMapFile, 0.8, splitPattern);
-			
-			helper.tweetCorpusUserStat(new TwitterTextDumpCorpusReader(twitterSampleStreamCorpusFile), twitterSampleStreamCorpusFile + ".user.stat");
-			helper.tweetCorpusUserFilterList(new TwitterTextDumpCorpusReader(twitterSampleStreamCorpusFile), twitterSampleStreamCorpusFile + ".user.filter.list", 1);
-			helper.tweetCorpusFilterByUser(new TwitterTextDumpCorpusReader(twitterSampleStreamCorpusFile), twitterSampleStreamCorpusFile + ".refined.user", twitterSampleStreamCorpusFile + ".user.filter.list");
-			helper.tweetCorpusFilterByStopword(new TwitterTextDumpCorpusReader(twitterSampleStreamCorpusFile + ".refined.user"), twitterSampleStreamCorpusFile + ".refined.user.stopword", 3);
-			
-			double f = 0.75;
-			String dataset1 = twitterDomainCorpusFile + ".refined.user.hashtag.similarity.relevance.0.75";
-			String dataset2 = twitterSampleStreamCorpusFile + ".refined.user.stopword.irrelevance.0.75";
-			String trainingset1 = dataset1 + ".entity";
-			String trainingset2 = dataset2 + ".entity";
-			String trainingset = trainingset1 + ".training";
-			String modelfile = "data/mallet/tweet.relevance.0.75.model";
-			
-			String stanfodPosTaggerModel = "data/stanford_nlp/pos_tagger_model/left3words-wsj-0-18.tagger";
+//			helper.tweetCorpusUserFilterList(new TwitterDBPediaCorpusReader(twitterDomainCorpusFile), twitterDomainCorpusFile + ".user.filter.list", 1);
+//			helper.tweetCorpusFilterByUser(new TwitterDBPediaCorpusReader(twitterDomainCorpusFile), twitterDomainCorpusFile + ".refined.user", twitterDomainCorpusFile + ".user.filter.list");
+//			helper.tweetCorpusFilterByHashtagUsage(new TwitterDBPediaCorpusReader(twitterDomainCorpusFile + ".refined.user"), twitterDomainCorpusFile + ".refined.user.hashtag");//			helper.tweetCorpusFilterByCosineSimilarity(new TwitterDBPediaCorpusReader(twitterDomainCorpusFile + ".refined.user.hashtag"), twitterDomainCorpusFile + ".refined.user.hashtag.similarity");
+//			helper.tweetCorpusFilterByRelevance(new TwitterDBPediaCorpusReader(twitterDomainCorpusFile + ".refined.user.hashtag.similarity"), twitterDomainCorpusFile + ".refined.user.hashtag.similarity.relevance.0.8", dbpediaInfoboxValueInDomainScoreMapFile, 0.8, splitPattern);
+//			
+//			helper.tweetCorpusUserStat(new TwitterTextDumpCorpusReader(twitterSampleStreamCorpusFile), twitterSampleStreamCorpusFile + ".user.stat");
+//			helper.tweetCorpusUserFilterList(new TwitterTextDumpCorpusReader(twitterSampleStreamCorpusFile), twitterSampleStreamCorpusFile + ".user.filter.list", 1);
+//			helper.tweetCorpusFilterByUser(new TwitterTextDumpCorpusReader(twitterSampleStreamCorpusFile), twitterSampleStreamCorpusFile + ".refined.user", twitterSampleStreamCorpusFile + ".user.filter.list");
+//			helper.tweetCorpusFilterByStopword(new TwitterTextDumpCorpusReader(twitterSampleStreamCorpusFile + ".refined.user"), twitterSampleStreamCorpusFile + ".refined.user.stopword", 3);
+//			
+//			double f = 0.75;
+//			String dataset1 = twitterDomainCorpusFile + ".refined.user.hashtag.similarity.relevance.0.75";
+//			String dataset2 = twitterSampleStreamCorpusFile + ".refined.user.stopword.irrelevance.0.75";
+//			String trainingset1 = dataset1 + ".entity";
+//			String trainingset2 = dataset2 + ".entity";
+//			String trainingset = trainingset1 + ".training";
+//			String modelfile = "data/mallet/tweet.relevance.0.75.model";
+//			
+//			String stanfodPosTaggerModel = "data/stanford_nlp/pos_tagger_model/left3words-wsj-0-18.tagger";
 			
 //			helper.tweetCorpusFilterByRelevance(new TwitterDBPediaCorpusReader(twitterDomainCorpusFile + ".refined.user.hashtag.similarity"), dataset1, dbpediaInfoboxValueInDomainScoreMapFile, f, splitPattern);
 //			DBPediaTweetCorpusConstructWorkflow workflow1 = new DBPediaTweetCorpusConstructWorkflow();
