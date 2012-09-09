@@ -32,9 +32,7 @@ import twitter4j.TwitterFactory;
 import twitter4j.TwitterStream;
 import twitter4j.TwitterStreamFactory;
 
-import com.maalaang.omtwitter.io.OMTwitterCorpusFile;
-import com.maalaang.omtwitter.io.OMTwitterCorpusFileWriter;
-import com.maalaang.omtwitter.model.OMTweet_Impl;
+import com.maalaang.omtwitter.model.OMTweet;
 
 /**
  * @author Sangwon Park
@@ -63,17 +61,13 @@ public class TwitterCorpusConstructor {
 	 * @throws InterruptedException
 	 */
 	public void constructCorpusBySearch(Set<String> queries, String rawCorpusFile, int rpp, int max, String lang, int interval, int retryNum, int retryInterval) throws IOException, InterruptedException {
-		OMTwitterCorpusFileWriter corpusWriter = new OMTwitterCorpusFileWriter(rawCorpusFile, new int[] {
-			OMTwitterCorpusFile.FIELD_ID,
-			OMTwitterCorpusFile.FIELD_AUTHOR,
-			OMTwitterCorpusFile.FIELD_DATE,
-			OMTwitterCorpusFile.FIELD_QUERY,
-			OMTwitterCorpusFile.FIELD_TEXT
-		});
+		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(rawCorpusFile), "UTF-8"));
 		long resultTweetTotalCnt = 0;
 		
 		int queryTotalNum = queries.size();
 		int queryProcessCnt = 0;
+		
+		SimpleDateFormat dateFormat = new SimpleDateFormat(OMTweet.DATE_FORMAT);
 		
 		for (String query : queries) {
 			List<QueryResult> res = null;
@@ -90,20 +84,31 @@ public class TwitterCorpusConstructor {
 				}
 			}
 			
+			// ID AUTHOR DATE QUERY TEXT
 			int resultTweetCnt = 0;
 			for (QueryResult qr : res) {
 				List<Tweet> list = qr.getTweets();
 				for (Tweet t : list) {
-					corpusWriter.write(new OMTweet_Impl(String.valueOf(t.getId()), t.getFromUser().replaceAll("\\s+", " "), t.getCreatedAt(), t.getText().replaceAll("\\s+", " "), query));
+					bw.write(String.valueOf(t.getId()));
+					bw.write('\t');
+					bw.write(t.getFromUser().replaceAll("\\s+", " "));
+					bw.write('\t');
+					bw.write(dateFormat.format(t.getCreatedAt()));
+					bw.write('\t');
+					bw.write(query);
+					bw.write('\t');
+					bw.write(t.getText().replaceAll("\\s+", " "));
+					bw.write('\n');
 					resultTweetCnt++;
 				}
 			}
 			resultTweetTotalCnt += resultTweetCnt;
 			logger.info("[" + (++queryProcessCnt) + "/" + queryTotalNum + "] " + resultTweetCnt + " tweets are returned. total=" + resultTweetTotalCnt);
 			
+			bw.flush();
 			Thread.sleep(interval);
 		}
-		corpusWriter.close();
+		bw.close();
 		logger.info("done");
 	}
 	
