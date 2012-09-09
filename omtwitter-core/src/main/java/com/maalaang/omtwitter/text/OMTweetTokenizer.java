@@ -27,13 +27,19 @@ public class OMTweetTokenizer {
 		while (matcher.find()) {
 			String token = matcher.group();
 			int type = 0;
-			if (token.charAt(0) == '#') {
+			switch (token.charAt(0)) {
+			case '#':
 				type = OMTweetToken.TOKEN_TYPE_HASHTAG;
-			} else if (token.charAt(0) == '@') {
+				break;
+			case '@':
 				type = OMTweetToken.TOKEN_TYPE_USER;
-			} else if (token.startsWith("http")) {
-				type = OMTweetToken.TOKEN_TYPE_URL;
-			} else {
+				break;
+			case 'h':
+				if (token.startsWith("http")) {
+					type = OMTweetToken.TOKEN_TYPE_URL;
+					break;
+				}
+			default:
 				type = OMTweetToken.TOKEN_TYPE_NORMAL;
 			}
 			list.add(new OMTweetToken_Impl(type, matcher.start(), matcher.end(), token));
