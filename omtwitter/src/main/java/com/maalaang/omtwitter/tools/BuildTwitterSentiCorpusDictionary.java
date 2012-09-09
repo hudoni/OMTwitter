@@ -9,7 +9,6 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStreamWriter;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -40,6 +39,8 @@ public class BuildTwitterSentiCorpusDictionary {
 	public final static int SORT_BY_NEG_SCORE = 1;
 	public final static int SORT_BY_LEXICAL = 2;
 	
+	private OMTweetTokenizer tweetTokenizer = null;
+	
 	/**
 	 * @param args
 	 */
@@ -66,6 +67,7 @@ public class BuildTwitterSentiCorpusDictionary {
 
 	public BuildTwitterSentiCorpusDictionary() {
 		logger = Logger.getLogger(getClass());
+		tweetTokenizer = new OMTweetTokenizer();
 	}
 	
 	
@@ -79,7 +81,7 @@ public class BuildTwitterSentiCorpusDictionary {
 		
 			int polarity = tweet.getPolarity();
 			
-			List<OMTweetToken> tokenList = OMTweetTokenizer.tokenize(tweet.getText());
+			OMTweetToken[] tokenList = tweetTokenizer.tokenize(tweet.getText());
 			for (OMTweetToken tok : tokenList) {
 				String key = tok.getNormalizedText();
 				

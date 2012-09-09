@@ -9,6 +9,7 @@ import java.util.Set;
 import com.maalaang.omtwitter.corpus.FilterCosineSimilarity;
 import com.maalaang.omtwitter.corpus.FilterDomainRelevance;
 import com.maalaang.omtwitter.corpus.FilterHashtagUsage;
+import com.maalaang.omtwitter.corpus.FilterStopword;
 import com.maalaang.omtwitter.corpus.FilterUserName;
 import com.maalaang.omtwitter.corpus.TweetFilterPipeline;
 import com.maalaang.omtwitter.io.CollectionTextReader;
@@ -35,23 +36,57 @@ public class ConstructTwitterNamedEntityCorpus {
 					OMTwitterCorpusFile.FIELD_TEXT };
 			OMTwitterReader searchCorpusReader = new OMTwitterCorpusFileReader(prop.getProperty("raw.corpus.search.file"), searchCorpusFields);
 			
-			TweetFilterPipeline filterPipe = new TweetFilterPipeline();
-			filterPipe.add(new FilterUserName(Integer.parseInt(prop.getProperty("raw.corpus.search.filter.user.name.window.size")), Integer.parseInt(prop.getProperty("raw.corpus.search.filter.user.name.post.limit"))));
-			filterPipe.add(new FilterHashtagUsage());
-			filterPipe.add(new FilterCosineSimilarity(Integer.parseInt(prop.getProperty("raw.corpus.search.filter.cosine.similarity.window.size")), Integer.parseInt(prop.getProperty("raw.corpus.search.filter.cosine.similarity.threshold"))));
-			filterPipe.add(new FilterDomainRelevance(wrsMap, stopwords, Double.parseDouble(prop.getProperty("raw.corpus.search.filter.domain.relevance.relevance.factor")), Integer.parseInt(prop.getProperty("raw.corpus.search.filter.domain.relevance.window.size")), Double.parseDouble(prop.getProperty("raw.corpus.search.filter.domain.relevance.start.window.score"))));
+			TweetFilterPipeline searchCorpusFilterPipe = new TweetFilterPipeline();
+			searchCorpusFilterPipe.add(new FilterUserName(Integer.parseInt(prop.getProperty("raw.corpus.search.filter.user.name.window.size")),
+					Integer.parseInt(prop.getProperty("raw.corpus.search.filter.user.name.post.limit"))));
+			searchCorpusFilterPipe.add(new FilterHashtagUsage());
+			searchCorpusFilterPipe.add(new FilterCosineSimilarity(Integer.parseInt(prop.getProperty("raw.corpus.search.filter.cosine.similarity.window.size")),
+					Double.parseDouble(prop.getProperty("raw.corpus.search.filter.cosine.similarity.threshold"))));
+			searchCorpusFilterPipe.add(new FilterDomainRelevance(wrsMap, stopwords,
+					Double.parseDouble(prop.getProperty("raw.corpus.search.filter.domain.relevance.relevance.factor")),
+					Integer.parseInt(prop.getProperty("raw.corpus.search.filter.domain.relevance.window.size")),
+					Double.parseDouble(prop.getProperty("raw.corpus.search.filter.domain.relevance.start.window.score"))));
+			searchCorpusFilterPipe.initialize();
 			
 			while (searchCorpusReader.hasNext()) {
 				OMTweet tweet = searchCorpusReader.next();
-				if (filterPipe.filter(tweet)) {
+				if (searchCorpusFilterPipe.filter(tweet)) {
+					// TODO
 				}
 			}
+			
 			
 			int[] sampleCorpusFields = new int[] { OMTwitterCorpusFile.FIELD_ID,
 					OMTwitterCorpusFile.FIELD_AUTHOR,
 					OMTwitterCorpusFile.FIELD_DATE,
 					OMTwitterCorpusFile.FIELD_TEXT };
 			OMTwitterReader sampleCorpusReader = new OMTwitterCorpusFileReader(prop.getProperty("raw.corpus.sample.file"), sampleCorpusFields);
+			
+			TweetFilterPipeline sampleCorpusFilterPipe = new TweetFilterPipeline();
+			sampleCorpusFilterPipe.add(new FilterUserName(Integer.parseInt(prop.getProperty("raw.corpus.sample.filter.user.name.window.size")),
+					Integer.parseInt(prop.getProperty("raw.corpus.sample.filter.user.name.post.limit"))));
+			sampleCorpusFilterPipe.add(new FilterStopword(stopwords, Integer.parseInt(prop.getProperty("raw.corpus.sample.filter.stopword.threshold"))));
+			sampleCorpusFilterPipe.add(new FilterCosineSimilarity(Integer.parseInt(prop.getProperty("raw.corpus.sample.filter.cosine.similarity.window.size")),
+					Double.parseDouble(prop.getProperty("raw.corpus.sample.filter.cosine.similarity.threshold"))));
+			sampleCorpusFilterPipe.add(new FilterDomainRelevance(wrsMap, stopwords,
+					Double.parseDouble(prop.getProperty("raw.corpus.sample.filter.domain.relevance.relevance.factor")),
+					Integer.parseInt(prop.getProperty("raw.corpus.sample.filter.domain.relevance.window.size")),
+					Double.parseDouble(prop.getProperty("raw.corpus.sample.filter.domain.relevance.start.window.score")),
+					true));
+			sampleCorpusFilterPipe.initialize();
+			
+			while (sampleCorpusReader.hasNext()) {
+				OMTweet tweet = sampleCorpusReader.next();
+				if (sampleCorpusFilterPipe.filter(tweet)) {
+					// TODO
+				}
+			}
+			
+			searchCorpusFilterPipe.close();
+			searchCorpusReader.close();
+			
+			sampleCorpusFilterPipe.close();
+			sampleCorpusReader.close();
 			
 		} catch (Exception e) {
 			e.printStackTrace();

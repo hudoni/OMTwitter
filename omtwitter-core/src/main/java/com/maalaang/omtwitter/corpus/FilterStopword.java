@@ -3,7 +3,6 @@
  */
 package com.maalaang.omtwitter.corpus;
 
-import java.util.List;
 import java.util.Set;
 
 import com.maalaang.omtwitter.model.OMTweet;
@@ -29,7 +28,7 @@ public class FilterStopword implements TweetFilter {
 		
 	}
 
-	public void next(OMTweet tweet, List<OMTweetToken> tokenList) {
+	public void next(OMTweet tweet, OMTweetToken[] tokenList) {
 		int cnt = 0;
 		for (OMTweetToken tok : tokenList) {
 			if (stopwords.contains(tok)) {

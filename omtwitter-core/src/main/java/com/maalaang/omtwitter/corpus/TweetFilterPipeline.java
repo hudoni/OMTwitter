@@ -4,7 +4,6 @@
 package com.maalaang.omtwitter.corpus;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.log4j.Logger;
 
@@ -20,11 +19,13 @@ public class TweetFilterPipeline {
 	private ArrayList<TweetFilter> filterList = null;
 	private String[] filterNames = null;
 	private boolean[] filterResults = null;
+	private OMTweetTokenizer tweetTokenizer = null;
 	
 	private Logger logger = null;
 	
 	public TweetFilterPipeline() {
 		filterList = new ArrayList<TweetFilter>();
+		tweetTokenizer = new OMTweetTokenizer();
 		logger = Logger.getLogger(getClass());
 	}
 	
@@ -37,19 +38,32 @@ public class TweetFilterPipeline {
 		filterNames = new String[filterList.size()];
 		filterResults = new boolean[filterList.size()];
 		
+		logger.debug("initialize TweetFilterPipeline");
 		int i = 0;
 		for (TweetFilter f : filterList) {
 			filterNames[i] = f.getClass().getSimpleName();
 			
-			logger.info("initialize " + filterNames[i]);
+			logger.debug("initialize " + filterNames[i]);
 			f.initialize();
 			
 			i++;
 		}
 	}
 	
+	/**
+	 * Perform filtering with the filters registered.
+	 * @param tweet
+	 * @return true if the specified tweet is passed through all the filters; otherwise, false.
+	 */
 	public boolean filter(OMTweet tweet) {
-		List<OMTweetToken> tokenList = OMTweetTokenizer.tokenize(tweet.getText().toLowerCase());
+		OMTweetToken[] tokenList = tweetTokenizer.tokenize(tweet.getText().toLowerCase());
+		
+		if (logger.isDebugEnabled()) {
+			for (OMTweetToken t : tokenList) {
+				logger.debug(t);
+			}
+			
+		}
 		
 		int i = 0;
 		boolean res = false;
@@ -60,7 +74,7 @@ public class TweetFilterPipeline {
 			res = f.isFilteredOut();
 			
 			if (res) {
-				logger.info(filterNames[i] + " filtered out - " + tweet);
+				logger.debug(filterNames[i] + " filtered out - " + tweet);
 				filtered = true;
 			}
 			
@@ -71,9 +85,10 @@ public class TweetFilterPipeline {
 	}
 	
 	public void close() {
+		logger.debug("close TweetFilterPipeline");
 		int i = 0;
 		for (TweetFilter f : filterList) {
-			logger.info("close " + filterNames[i]);
+			logger.debug("close " + filterNames[i]);
 			f.close();
 			i++;
 		}

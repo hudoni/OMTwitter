@@ -4,7 +4,6 @@
 package com.maalaang.omtwitter.corpus;
 
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -49,7 +48,7 @@ public class FilterDomainRelevance implements TweetFilter {
 		windowQueue = new LinkedList<Double>();
 	}
 
-	public void next(OMTweet tweet, List<OMTweetToken> tokenList) {
+	public void next(OMTweet tweet, OMTweetToken[] tokenList) {
 		double rs = relevanceScore(tokenList);
 		double threshold = useWindowScore && windowSize > 0 ? windowScoreSum / (double) windowSize : startWindowScore;
 		threshold *= relevanceFactor;
@@ -86,8 +85,8 @@ public class FilterDomainRelevance implements TweetFilter {
 		windowQueue = null;
 	}
 	
-	private double relevanceScore(List<OMTweetToken> tokenList) {
-		int tokenCnt = tokenList.size();
+	private double relevanceScore(OMTweetToken[] tokenList) {
+		int tokenCnt = tokenList.length;
 		double sum = 0.0;
 		Double wrs = null;
 		

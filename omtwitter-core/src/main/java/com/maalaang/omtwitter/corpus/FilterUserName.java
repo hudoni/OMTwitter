@@ -5,7 +5,6 @@ package com.maalaang.omtwitter.corpus;
 
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
 
 import com.maalaang.omtwitter.model.OMTweet;
 import com.maalaang.omtwitter.text.OMTweetToken;
@@ -36,7 +35,7 @@ public class FilterUserName implements TweetFilter {
 		}
 	}
 	
-	public void next(OMTweet tweet, List<OMTweetToken> tokenList) {
+	public void next(OMTweet tweet, OMTweetToken[] tokenList) {
 		String userName = tweet.getAuthor();
 		Integer freq = null;
 		

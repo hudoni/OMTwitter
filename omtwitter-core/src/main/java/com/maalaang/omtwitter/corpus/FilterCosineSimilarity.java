@@ -5,7 +5,6 @@ package com.maalaang.omtwitter.corpus;
 
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.math3.exception.MathArithmeticException;
@@ -38,7 +37,7 @@ public class FilterCosineSimilarity implements TweetFilter {
 		tokenIdMap = new HashMap<String,Integer>();
 	}
 
-	public void next(OMTweet tweet, List<OMTweetToken> tokenList) {
+	public void next(OMTweet tweet, OMTweetToken[] tokenList) {
 		RealVector fv = tweetToFeatureVector(tweet, tokenList);
 		filtered = false;
 		
@@ -67,8 +66,8 @@ public class FilterCosineSimilarity implements TweetFilter {
 		tokenIdMap.clear();
 	}
 	
-	private RealVector tweetToFeatureVector(OMTweet tweet, List<OMTweetToken> tokenList) {
-		RealVector fv = new OpenMapRealVector();
+	private RealVector tweetToFeatureVector(OMTweet tweet, OMTweetToken[] tokenList) {
+		RealVector fv = new OpenMapRealVector(Integer.MAX_VALUE);
 		
 		for (OMTweetToken tok : tokenList) {
 			String t = tok.getNormalizedText();
@@ -79,7 +78,7 @@ public class FilterCosineSimilarity implements TweetFilter {
 				tokenIdMap.put(t, tokenId);
 			}
 			
-			fv.setEntry(tokenId, fv.getEntry(tokenId) + 1.0);
+			fv.addToEntry(tokenId, 1.0);
 		}
 		
 		return fv;

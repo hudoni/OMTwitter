@@ -1,7 +1,5 @@
 package com.maalaang.omtwitter.corpus;
 
-import java.util.List;
-
 import com.maalaang.omtwitter.model.OMTweet;
 import com.maalaang.omtwitter.text.OMTweetToken;
 
@@ -14,7 +12,7 @@ public class FilterHashtagUsage implements TweetFilter {
 	public void initialize() {
 	}
 
-	public void next(OMTweet tweet, List<OMTweetToken> tokenList) {
+	public void next(OMTweet tweet, OMTweetToken[] tokenList) {
 		filtered = false;
 
 		String query = tweet.getQuery();
@@ -29,20 +27,20 @@ public class FilterHashtagUsage implements TweetFilter {
 			}
 			idx++;
 		}
-		if (idx == tokenList.size()) {
+		if (idx == tokenList.length) {
 			throw new IllegalStateException("cannot find query hashtag in the tweet - query=" + query + ", tweet=" + tweet.getText());
 		}
 
 		int prevTokType;
 		if (idx > 0) {
-			prevTokType = tokenList.get(idx - 1).getType();
+			prevTokType = tokenList[idx-1].getType();
 		} else {
 			prevTokType = OMTweetToken.TOKEN_TYPE_NONE;
 		}
 
 		int nextTokType;
-		if (idx < tokenList.size() - 1) {
-			nextTokType = tokenList.get(idx + 1).getType();
+		if (idx < tokenList.length - 1) {
+			nextTokType = tokenList[idx+1].getType();
 		} else {
 			nextTokType = OMTweetToken.TOKEN_TYPE_NONE;
 		}

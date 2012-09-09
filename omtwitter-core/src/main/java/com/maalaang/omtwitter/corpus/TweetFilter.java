@@ -3,8 +3,6 @@
  */
 package com.maalaang.omtwitter.corpus;
 
-import java.util.List;
-
 import com.maalaang.omtwitter.model.OMTweet;
 import com.maalaang.omtwitter.text.OMTweetToken;
 
@@ -16,7 +14,7 @@ public interface TweetFilter {
 	
 	public void initialize();
 	
-	public void next(OMTweet tweet, List<OMTweetToken> tokenList);
+	public void next(OMTweet tweet, OMTweetToken[] tokenList);
 	
 	public boolean isFilteredOut();
 	

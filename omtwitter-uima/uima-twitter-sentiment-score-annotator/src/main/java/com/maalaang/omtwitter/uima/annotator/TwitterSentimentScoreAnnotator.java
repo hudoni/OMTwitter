@@ -5,7 +5,6 @@ package com.maalaang.omtwitter.uima.annotator;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.List;
 
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
@@ -34,6 +33,8 @@ public class TwitterSentimentScoreAnnotator extends JCasAnnotator_ImplBase {
 
 	private SentimentScoreDictionary sentiScoreDic = null;
 	
+	private OMTweetTokenizer tweetTokenizer = null;
+	
 	/* (non-Javadoc)
 	 * @see org.apache.uima.analysis_component.AnalysisComponent_ImplBase#initialize(org.apache.uima.UimaContext)
 	 */
@@ -42,6 +43,7 @@ public class TwitterSentimentScoreAnnotator extends JCasAnnotator_ImplBase {
 		super.initialize(aContext);
 		
 		logger = aContext.getLogger();
+		tweetTokenizer = new OMTweetTokenizer();
 		
 		try {
 			sentiScoreDic = SentimentScoreDictionaryFactory.loadFromSerializedFile((String) aContext.getConfigParameterValue(PARAM_SENTI_SCORE_DIC_OBJ_FILE));
@@ -65,7 +67,7 @@ public class TwitterSentimentScoreAnnotator extends JCasAnnotator_ImplBase {
 	@Override
 	public void process(JCas aJCas) throws AnalysisEngineProcessException {
 		
-		List<OMTweetToken> tokenList = OMTweetTokenizer.tokenize(aJCas.getDocumentText());
+		OMTweetToken[] tokenList = tweetTokenizer.tokenize(aJCas.getDocumentText());
 		
 		for (OMTweetToken tok : tokenList) {
 			SentimentScore score = sentiScoreDic.find(tok.getNormalizedText());
