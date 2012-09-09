@@ -19,9 +19,11 @@ public class FilterDomainRelevance implements TweetFilter {
 	
 	private Map<String,Double> wrsMap = null;
 	private Set<String> stopwords = null;
-	private double relevance = 0.0;
+	private double relevanceFactor = 0.0;
+	
 	private int windowSize = 0;
 	private double startWindowScore = 0.0;
+	private boolean irrelevance = false;
 	
 	private LinkedList<Double> windowQueue = null;
 	private double windowScoreSum = 0.0;
@@ -31,11 +33,16 @@ public class FilterDomainRelevance implements TweetFilter {
 	private boolean useWindowScore = false;
 	
 	public FilterDomainRelevance(Map<String,Double> wrsMap, Set<String> stopwords, double relevance, int windowSize, double startWindowScore) {
+		this(wrsMap, stopwords, relevance, windowSize, startWindowScore, false);
+	}
+	
+	public FilterDomainRelevance(Map<String,Double> wrsMap, Set<String> stopwords, double relevanceFactor, int windowSize, double startWindowScore, boolean irrelevance) {
 		this.wrsMap = wrsMap;
 		this.stopwords = stopwords;
-		this.relevance = relevance;
+		this.relevanceFactor = relevanceFactor;
 		this.windowSize = windowSize;
 		this.startWindowScore = startWindowScore;
+		this.irrelevance = irrelevance;
 	}
 
 	public void initialize() {
@@ -45,12 +52,16 @@ public class FilterDomainRelevance implements TweetFilter {
 	public void next(OMTweet tweet, List<OMTweetToken> tokenList) {
 		double rs = relevanceScore(tokenList);
 		double threshold = useWindowScore && windowSize > 0 ? windowScoreSum / (double) windowSize : startWindowScore;
-		threshold *= relevance;
+		threshold *= relevanceFactor;
 		
-		if (rs > threshold) {
-			filtered = false;
+		filtered = false;
+		
+		if (!irrelevance) {
+			if (rs < threshold)
+				filtered = true;
 		} else {
-			filtered = true;
+			if (rs > threshold)
+				filtered = true;
 		}
 		
 		windowScoreSum += rs;
