@@ -32,8 +32,8 @@ public class FilterDomainRelevance implements TweetFilter {
 	private int processCnt = 0;
 	private boolean useWindowScore = false;
 	
-	public FilterDomainRelevance(Map<String,Double> wrsMap, Set<String> stopwords, double relevance, int windowSize, double startWindowScore) {
-		this(wrsMap, stopwords, relevance, windowSize, startWindowScore, false);
+	public FilterDomainRelevance(Map<String,Double> wrsMap, Set<String> stopwords, double relevanceFactor, int windowSize, double startWindowScore) {
+		this(wrsMap, stopwords, relevanceFactor, windowSize, startWindowScore, false);
 	}
 	
 	public FilterDomainRelevance(Map<String,Double> wrsMap, Set<String> stopwords, double relevanceFactor, int windowSize, double startWindowScore, boolean irrelevance) {

@@ -38,6 +38,7 @@ public class TextWriteStatusListener implements StatusListener {
 	public void onStatus(Status status) {
 		if (lang != null && status.getUser().getLang().equals(lang)) {
 			try {
+				// ID AUTHOR DATE TEXT
 				bw.write(String.valueOf(status.getId()));
 				bw.write('\t');
 				bw.write(status.getUser().getName().replaceAll("\\s+", " "));

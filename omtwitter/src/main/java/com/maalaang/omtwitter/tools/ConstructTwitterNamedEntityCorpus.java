@@ -1,8 +1,60 @@
 package com.maalaang.omtwitter.tools;
 
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+
+import com.maalaang.omtwitter.corpus.FilterCosineSimilarity;
+import com.maalaang.omtwitter.corpus.FilterDomainRelevance;
+import com.maalaang.omtwitter.corpus.FilterHashtagUsage;
+import com.maalaang.omtwitter.corpus.FilterUserName;
+import com.maalaang.omtwitter.corpus.TweetFilterPipeline;
+import com.maalaang.omtwitter.io.CollectionTextReader;
+import com.maalaang.omtwitter.io.OMTwitterCorpusFileReader;
+import com.maalaang.omtwitter.io.OMTwitterReader;
+import com.maalaang.omtwitter.model.OMTweet;
+
 public class ConstructTwitterNamedEntityCorpus {
 	
 	public static void main(String[] args) {
+		
+		try {
+			Properties prop = new Properties();
+			prop.load(new InputStreamReader(new FileInputStream(args[0]), "UTF-8"));
+			
+			Map<String,Double> wrsMap = CollectionTextReader.readMapStringDouble(prop.getProperty("word.relevance.score.file"));
+			Set<String> stopwords = CollectionTextReader.readSetString(prop.getProperty("stopword.set.file"));
+			
+			int[] searchCorpusFields = new int[] { OMTwitterCorpusFileReader.FIELD_ID,
+					OMTwitterCorpusFileReader.FIELD_AUTHOR,
+					OMTwitterCorpusFileReader.FIELD_DATE,
+					OMTwitterCorpusFileReader.FIELD_QUERY,
+					OMTwitterCorpusFileReader.FIELD_TEXT };
+			OMTwitterReader searchCorpusReader = new OMTwitterCorpusFileReader(prop.getProperty("raw.corpus.search.file"), searchCorpusFields);
+			
+			TweetFilterPipeline filterPipe = new TweetFilterPipeline();
+			filterPipe.add(new FilterUserName(Integer.parseInt(prop.getProperty("raw.corpus.search.filter.user.name.window.size")), Integer.parseInt(prop.getProperty("raw.corpus.search.filter.user.name.post.limit"))));
+			filterPipe.add(new FilterHashtagUsage());
+			filterPipe.add(new FilterCosineSimilarity(Integer.parseInt(prop.getProperty("raw.corpus.search.filter.cosine.similarity.window.size")), Integer.parseInt(prop.getProperty("raw.corpus.search.filter.cosine.similarity.threshold"))));
+			filterPipe.add(new FilterDomainRelevance(wrsMap, stopwords, Double.parseDouble(prop.getProperty("raw.corpus.search.filter.domain.relevance.relevance.factor")), Integer.parseInt(prop.getProperty("raw.corpus.search.filter.domain.relevance.window.size")), Double.parseDouble(prop.getProperty("raw.corpus.search.filter.domain.relevance.start.window.score"))));
+			
+			while (searchCorpusReader.hasNext()) {
+				OMTweet tweet = searchCorpusReader.next();
+				if (filterPipe.filter(tweet)) {
+				}
+			}
+			
+			int[] sampleCorpusFields = new int[] { OMTwitterCorpusFileReader.FIELD_ID,
+					OMTwitterCorpusFileReader.FIELD_AUTHOR,
+					OMTwitterCorpusFileReader.FIELD_DATE,
+					OMTwitterCorpusFileReader.FIELD_TEXT };
+			OMTwitterReader sampleCorpusReader = new OMTwitterCorpusFileReader(prop.getProperty("raw.corpus.sample.file"), sampleCorpusFields);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 			// corpus refiner
 //			helper.tweetCorpusUserFilterList(new TwitterDBPediaCorpusReader(twitterDomainCorpusFile), twitterDomainCorpusFile + ".user.filter.list", 1);
 //			helper.tweetCorpusFilterByUser(new TwitterDBPediaCorpusReader(twitterDomainCorpusFile), twitterDomainCorpusFile + ".refined.user", twitterDomainCorpusFile + ".user.filter.list");

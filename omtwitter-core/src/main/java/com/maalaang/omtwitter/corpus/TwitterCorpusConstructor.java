@@ -46,6 +46,20 @@ public class TwitterCorpusConstructor {
 		logger = Logger.getLogger(getClass());
 	}
 	
+	/**
+	 * Construct raw corpus by searching Twitter based on the generated queries.
+	 * Fields: ID AUTHOR DATE QUERY TEXT
+	 * @param queries
+	 * @param rawCorpusFile
+	 * @param rpp
+	 * @param max
+	 * @param lang
+	 * @param interval
+	 * @param retryNum
+	 * @param retryInterval
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
 	public void constructCorpusBySearch(Set<String> queries, String rawCorpusFile, int rpp, int max, String lang, int interval, int retryNum, int retryInterval) throws IOException, InterruptedException {
 		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(rawCorpusFile), "UTF-8"));
 		long resultTweetTotalCnt = 0;
