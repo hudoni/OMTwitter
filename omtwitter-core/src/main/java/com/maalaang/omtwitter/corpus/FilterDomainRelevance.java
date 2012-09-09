@@ -57,7 +57,7 @@ public class FilterDomainRelevance implements TweetFilter {
 		windowQueue.addLast(rs);
 		
 		if (windowQueue.size() > windowSize) {
-			windowScoreSum -= windowQueue.pollFirst();
+			windowScoreSum -= windowQueue.remove();
 		}
 		
 		if (!useWindowScore && ++processCnt >= windowSize) {

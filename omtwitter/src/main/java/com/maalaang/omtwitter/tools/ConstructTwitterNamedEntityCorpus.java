@@ -1,7 +1,7 @@
 package com.maalaang.omtwitter.tools;
 
 public class ConstructTwitterNamedEntityCorpus {
-	/*
+	
 	public static void main(String[] args) {
 			// corpus refiner
 			helper.tweetCorpusUserFilterList(new TwitterDBPediaCorpusReader(twitterDomainCorpusFile), twitterDomainCorpusFile + ".user.filter.list", 1);
@@ -66,6 +66,5 @@ public class ConstructTwitterNamedEntityCorpus {
 			int nfold = 5;
 //			helper.mergeFilesByLinesToNFolds(trainingset1, trainingset2, nfold, trainingset);
 	}
-	*/
 
 }

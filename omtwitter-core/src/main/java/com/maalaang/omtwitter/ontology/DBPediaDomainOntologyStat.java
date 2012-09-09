@@ -56,6 +56,15 @@ public class DBPediaDomainOntologyStat {
 		logger = Logger.getLogger(getClass());
 	}
 
+	/**
+	 * Note: Words are extracted from the literals of infobox properties by InfoboxValueTokenizer.tokenizeToWord()
+	 * @param infoboxPropertiesFile
+	 * @param stopwords
+	 * @param resources
+	 * @param infoboxValueUnigramFreqMapFile
+	 * @return
+	 * @throws IOException
+	 */
 	public Map<String,Integer> infoboxValueWordFreq(String infoboxPropertiesFile, Set<String> stopwords, Set<String> resources, String infoboxValueUnigramFreqMapFile) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(infoboxPropertiesFile), "UTF-8"));
 		String line = null;

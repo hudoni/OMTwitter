@@ -3,51 +3,85 @@
  */
 package com.maalaang.omtwitter.corpus;
 
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.math3.exception.MathArithmeticException;
+import org.apache.commons.math3.linear.OpenMapRealVector;
+import org.apache.commons.math3.linear.RealVector;
+
+import com.maalaang.omtwitter.model.OMTweet;
+import com.maalaang.omtwitter.text.OMTweetToken;
+
 /**
  * @author Sangwon Park
  *
  */
 public class FilterCosineSimilarity implements TweetFilter {
-	/*
-
-	public void tweetCorpusFilterByCosineSimilarity(TwitterCorpusReader reader, String out) throws IOException {
-		FileWriter fw = new FileWriter(out);
-		
-		CosineSimiarity similarity = new CosineSimiarity();
-		LinkedList<String[]> tweetList = new LinkedList<String[]>();
-		HashSet<Integer> filteredSet = new HashSet<Integer>();
-		
-		reader.next();
-		String prevQuery = reader.getQuery();		
-		while (reader.hasNext()) {			String query = reader.getQuery();
-			if (prevQuery.equals(query)) {
-				tweetList.add(reader.getTokens());
-				reader.next();				prevQuery = query;				
-			} else {
-				Matrix tweetMatrix = tweetFVMatrix(tweetList, query);
-				Matrix similarityMatrix = similarity.transform(tweetMatrix);
-				
-				filteredSet.clear();
-				
-				for (int i = 0; i < similarityMatrix.getRowDimension(); i++) {
-					if (!filteredSet.contains(i)) {
-						for (int j = i + 1; j < similarityMatrix.getColumnDimension(); j++) {							if (!filteredSet.contains(j) && similarityMatrix.get(i, j) >= 0.7) {									filteredSet.add(j);
-							}						}					}
-				}
-								int cnt = 0;				for (String[] s : tweetList) {					if (!filteredSet.contains(cnt)) {
-						fw.write(s[0]);
-						fw.write('\t');
-						fw.write(s[1]);
-						fw.write('\t');
-						fw.write(s[2]);
-						fw.write('\n');
-//					} else {
-//						logger.info("filtered by cosine similarity: " + s[1] + "\t" + s[2]);
-					}					cnt++;
-				}				tweetList.clear();								prevQuery = reader.getQuery();
-			}	
-		}		reader.close();
-		fw.close();
+	
+	private LinkedList<RealVector> fvList = null;
+	private Map<String,Integer> tokenIdMap = null;
+	private int windowSize = 0;
+	private double threshold = 0.0;
+	private boolean filtered = false;
+	private int tokenIndex = 0;
+	
+	public FilterCosineSimilarity(int windowSize, double threshold) {
+		this.windowSize = windowSize;
+		this.threshold = threshold;
 	}
-	*/
+	
+	public void initialize() {
+		fvList = new LinkedList<RealVector>();
+		tokenIdMap = new HashMap<String,Integer>();
+	}
+
+	public void next(OMTweet tweet, List<OMTweetToken> tokenList) {
+		RealVector fv = tweetToFeatureVector(tweet, tokenList);
+		filtered = false;
+		
+		for (RealVector fv1 : fvList) {
+			try {
+				if (fv.cosine(fv1) > threshold) {
+					filtered = true;
+					break;
+				}
+			} catch (MathArithmeticException e) {
+			}
+		}
+		
+		fvList.add(fv);
+		if (fvList.size() > windowSize) {
+			fvList.remove();
+		}
+	}
+
+	public boolean isFilteredOut() {
+		return filtered;
+	}
+
+	public void close() {
+		fvList.clear();
+		tokenIdMap.clear();
+	}
+	
+	private RealVector tweetToFeatureVector(OMTweet tweet, List<OMTweetToken> tokenList) {
+		RealVector fv = new OpenMapRealVector();
+		
+		for (OMTweetToken tok : tokenList) {
+			String t = tok.getNormalizedText();
+			
+			Integer tokenId = tokenIdMap.get(t);
+			if (tokenId == null) {
+				tokenId = tokenIndex++;
+				tokenIdMap.put(t, tokenId);
+			}
+			
+			fv.setEntry(tokenId, fv.getEntry(tokenId) + 1.0);
+		}
+		
+		return fv;
+	}
 }

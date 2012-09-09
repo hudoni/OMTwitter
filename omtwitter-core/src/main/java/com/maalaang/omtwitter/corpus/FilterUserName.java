@@ -43,7 +43,7 @@ public class FilterUserName implements TweetFilter {
 		if (windowSize > 0) {
 			userNameQueue.addLast(userName);
 			if (userNameQueue.size() > windowSize) {
-				String removedUserName = userNameQueue.pollFirst();
+				String removedUserName = userNameQueue.remove();
 				freq = userPostFreqMap.get(removedUserName);
 				if (freq == null) {
 					throw new IllegalStateException();
