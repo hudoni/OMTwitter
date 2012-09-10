@@ -40,7 +40,7 @@ public class OMTwitterCorpusFileReader implements OMTwitterReader {
 		this.fieldDelimiter = fieldDelimiter;
 		this.logger = Logger.getLogger(this.getClass());
 		
-		logger.info("read from the twitter corpus file: " + file);
+		logger.info("read from twitter corpus file - " + file);
 	}
 
 	public boolean hasNext() {
@@ -109,8 +109,8 @@ public class OMTwitterCorpusFileReader implements OMTwitterReader {
 
 	public void close() {
 		try {
+			logger.info("close twitter corpus file");
 			br.close();
-			logger.info("the twitter corpus file was closed");
 		} catch (IOException e) {
 			logger.error(e);
 		}

@@ -62,7 +62,8 @@ public class BuildDBPediaDomainOntologyStat {
 			CollectionTextWriter.writeMapStringDouble(wrsMap, prop.getProperty("word.relevance.score.file"), true);
 			
 			// value & properties
-			Map<String,Integer> valuePropertyFreqMap = stat.infoboxValuePropertyFreq(prop.getProperty("domain.ontology.file"), prop.getProperty("value.property.freq.file"), delegateProperties, stopwords, 1, 5);
+			Map<String,Integer> valuePropertyFreqMap = stat.infoboxValuePropertyFreq(prop.getProperty("domain.ontology.file"), prop.getProperty("value.property.freq.file"), delegateProperties, stopwords,
+					Integer.parseInt(prop.getProperty("value.token.min")), Integer.parseInt(prop.getProperty("value.token.max")));
 			CollectionTextWriter.writeMapStringInteger(valuePropertyFreqMap, prop.getProperty("value.property.freq.file"), false);
 			
 			stat.infoboxValueToPropertyMap(prop.getProperty("value.property.freq.file"), prop.getProperty("value.to.property.map.file"), delegateProperties, false);
