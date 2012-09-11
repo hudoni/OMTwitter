@@ -1,31 +1,94 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <casConsumerDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
-  <implementationName>com.maalaang.omtwitter.uima.consumer.SvmTrainingDataWriteConsumer</implementationName>
+  <implementationName>com.maalaang.omtwitter.uima.consumer.TwitterSentimentCorpusWriteConsumer</implementationName>
   <processingResourceMetaData>
-    <name>uima-svm-training-data-write-consumer</name>
-    <description>Write a SVM training data file using the feature vectors generated based on the annotations.</description>
+    <name>uima-twitter-sentiment-corpus-write-consumer</name>
+    <description>Writes twitter sentiment corpus based on the smiley/frowny emoticons and the sentiment score from SentiWordNet.</description>
     <version>1.0</version>
     <vendor>maalaang.com</vendor>
     <configurationParameters>
       <configurationParameter>
-        <name>svmFVFactoryClassName</name>
-        <description>The name of the class that follows the com.maalaang.omtwitter.uima.ml.SvmFVFactory interface for generation of feature vectors.</description>
+        <name>corpusFile</name>
         <type>String</type>
         <multiValued>false</multiValued>
         <mandatory>true</mandatory>
       </configurationParameter>
       <configurationParameter>
-        <name>svmTrainingDataFile</name>
-        <description>The file of the svm training examples to write.</description>
+        <name>corpusFields</name>
         <type>String</type>
         <multiValued>false</multiValued>
         <mandatory>true</mandatory>
       </configurationParameter>
       <configurationParameter>
-        <name>svmTargetExtractorClassName</name>
-        <description>The name of the class that follows com.maalaang.omtwitter.uima.ml.SvmTargetExtractor  interface for getting the target of a svm training example.</description>
+        <name>corpusFieldsDelim</name>
         <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>stopwordSetFile</name>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>filterUserNameWindowSize</name>
+        <type>Integer</type>
+        <multiValued>false</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>filterUserNamePostLimit</name>
+        <type>Integer</type>
+        <multiValued>false</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>filterStopwordThreshold</name>
+        <type>Integer</type>
+        <multiValued>false</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>filterCosineSimilarityWindowSize</name>
+        <type>Integer</type>
+        <multiValued>false</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>filterCosineSimilarityThreshold</name>
+        <type>Float</type>
+        <multiValued>false</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>subjectivityScoreWindowSize</name>
+        <type>Integer</type>
+        <multiValued>false</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>swnSubjectivityFactor</name>
+        <type>Float</type>
+        <multiValued>false</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>tscSubjectivityFactor</name>
+        <type>Float</type>
+        <multiValued>false</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>swnSubjectivityScoreWindowStart</name>
+        <type>Float</type>
+        <multiValued>false</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>tscSubjectivityScoreWindowStart</name>
+        <type>Float</type>
         <multiValued>false</multiValued>
         <mandatory>true</mandatory>
       </configurationParameter>
@@ -34,8 +97,8 @@
     <typeSystemDescription>
       <imports>
         <import name="com.maalaang.omtwitter.uima.type.TweetAnnotation"/>
-        <import name="com.maalaang.omtwitter.uima.type.SentiWordNetAnnotation"/>
         <import name="com.maalaang.omtwitter.uima.type.TwitterSentiCorpusAnnotation"/>
+        <import name="com.maalaang.omtwitter.uima.type.SentiWordNetAnnotation"/>
       </imports>
     </typeSystemDescription>
     <typePriorities/>
@@ -53,6 +116,8 @@
           <feature>com.maalaang.omtwitter.uima.type.TwitterSentiCorpusAnnotation:positiveScore</feature>
           <feature>com.maalaang.omtwitter.uima.type.TwitterSentiCorpusAnnotation:end</feature>
           <feature>com.maalaang.omtwitter.uima.type.TwitterSentiCorpusAnnotation:begin</feature>
+          <feature>com.maalaang.omtwitter.uima.type.TweetAnnotation:date</feature>
+          <feature>com.maalaang.omtwitter.uima.type.TweetAnnotation:id</feature>
           <feature>com.maalaang.omtwitter.uima.type.TweetAnnotation:query</feature>
           <feature>com.maalaang.omtwitter.uima.type.TweetAnnotation:polarity</feature>
           <feature>com.maalaang.omtwitter.uima.type.TweetAnnotation:author</feature>

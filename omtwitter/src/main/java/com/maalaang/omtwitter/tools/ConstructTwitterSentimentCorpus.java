@@ -1,49 +1,153 @@
 package com.maalaang.omtwitter.tools;
 
-public class ConstructTwitterSentimentCorpus {
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Properties;
 
-	/*
-			String sentimentFile1 = twitterDomainCorpusFile + ".senti";
-			String sentimentFile2 = twitterSampleStreamCorpusFile + ".senti";
-			String sentimentSmileyRemovedFile = twitterDomainCorpusFile + ".senti.smiley.removed.merged";
-			String sentimentNoSmileyTweetFile = twitterDomainCorpusFile + ".senti.nosmiley";
+import org.apache.log4j.Level;
+import org.apache.uima.resource.ResourceConfigurationException;
+import org.apache.uima.resource.ResourceInitializationException;
+import org.apache.uima.util.InvalidXMLException;
+
+import com.maalaang.omtwitter.io.LogSystemStream;
+import com.maalaang.omtwitter.uima.pipeline.OMTwitterFixedFlowPipeline;
+
+public class ConstructTwitterSentimentCorpus {
+	private Properties prop = null;
+	
+	public static void main(String[] args) {
+		try {
+			Properties prop = new Properties();
+			prop.load(new InputStreamReader(new FileInputStream(args[0]), "UTF-8"));
 			
-//			helper.sentiment(twitterDomainCorpusFile, sentimentFile, false);
+//			LogSystemStream.redirectErrToLog(Level.DEBUG);
 			
-//			File sentiNoSmileyTweetFile = new File(sentimentNoSmileyTweetFile);
-//			sentiNoSmileyTweetFile.delete();
-//			helper.sentiment(new TwitterDBPediaCorpusReader(twitterDomainCorpusFile + ".refined.user.hashtag.similarity"), sentimentSmileyRemovedFile+".part1", sentimentNoSmileyTweetFile, true, false, true);
-//			helper.sentiment(new TwitterTextDumpCorpusReader(twitterSampleStreamCorpusFile + ".refined.user.stopword"), sentimentSmileyRemovedFile+".part2", sentimentNoSmileyTweetFile, true, false, true);
-//			helper.sentimentMerge(sentimentSmileyRemovedFile+".part1", sentimentSmileyRemovedFile+".part2", sentimentSmileyRemovedFile);
-					
-			String sentiWordNetDicFile = "data/sentiwordnet/SentiWordNet_3.0.0_20100908.stem.avg.dic";
-			String stanfordSetUnigramScoreDicFile = "data/dic/stanford_set_unigram_score.dic";
-			String unigramScoreDicFile = sentimentSmileyRemovedFile + ".unigram_score.dic";
+			ConstructTwitterSentimentCorpus con = new ConstructTwitterSentimentCorpus(prop);
+			con.run();
 			
-			UnigramDic dic = new UnigramDic();
-//			dic.buildDic(new TwitterDBPediaSentiCorpusReader(sentimentSmileyRemovedFile), unigramScoreDicFile);
-			
-//			double tweetNeutralFilterSWNParam = 0.043 - (0.043 * 0.2);
-//			double tweetNeutralFilterCorpusParam = 0.31 - (0.31 * 0.2);
-			double tweetNeutralFilterSWNParam = 0.0407 * 0.75;
-			double tweetNeutralFilterCorpusParam = 0.3044 * 0.75;
-			String sentimentNeutralTweetFile = sentimentNoSmileyTweetFile + ".filtered";
-			TweetSentiCorpusNeutralFilteringWorkflow workflow3 = new TweetSentiCorpusNeutralFilteringWorkflow();
-			workflow3.setProperty("TweetDBPediaSentiCorpusReader.TweetSet", sentimentNoSmileyTweetFile);
-			workflow3.setProperty("TweetDBPediaSentiCorpusReader.TweetSetSize", "0");
-			workflow3.setProperty("StanfordPosAnnotator.ModelFile", stanfodPosTaggerModel);
-			workflow3.setProperty("SentiWordnetAvgScoreAnnotator.DictionaryFile", sentiWordNetDicFile);
-			workflow3.setProperty("TwitterSentiScoreAnnotator.DictionaryFile", unigramScoreDicFile);
-			workflow3.setProperty("TweetNeutralTweetWriter.TweetSet", sentimentNeutralTweetFile);
-			workflow3.setProperty("TweetNeutralTweetWriter.Param1", String.valueOf(tweetNeutralFilterSWNParam));
-			workflow3.setProperty("TweetNeutralTweetWriter.Param2", String.valueOf(tweetNeutralFilterCorpusParam));
-			workflow3.setProperty("TweetXmiWriterCasConsumer.write", "false");
-			workflow3.setProperty("TweetXmiWriterCasConsumer.OutputDirectory", "E:/Development/UIMA Annotation Result/xmi/TweetSentiCorpusNeutralFilteringWorkflow");
-//			workflow3.run(true);	
-			
-			String sentimentCorpusFile = sentimentSmileyRemovedFile + ".neutral.added";
-			String sentimentCorpusUnigramDicFile = sentimentCorpusFile + ".unigram_score.dic";
-			
-			helper.sentimentMerge(sentimentSmileyRemovedFile, sentimentNeutralTweetFile, sentimentCorpusFile);
-			*/
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public ConstructTwitterSentimentCorpus(Properties prop) {
+		this.prop = prop;
+	}
+	
+	public void run() throws Exception {
+		writeSentiCorpusFromSearchCorpus();
+		writeSentiCorpusFromSampleCorpus();
+		mergeSentiCorpus();
+	}
+	
+	private void writeSentiCorpusFromSearchCorpus() throws InvalidXMLException, IOException, ResourceConfigurationException, ResourceInitializationException {
+		OMTwitterFixedFlowPipeline pipeline = new OMTwitterFixedFlowPipeline();
+
+		pipeline.setReader("TwitterCorpusReader", "com/maalaang/omtwitter/uima/reader/uima-twitter-corpus-reader.xml");
+		pipeline.setReaderParameter("TwitterCorpusReader", "twitterCorpusFile", prop.getProperty("raw.corpus.search.file"));
+		pipeline.setReaderParameter("TwitterCorpusReader", "fields", "ID AUTHOR DATE QUERY TEXT");
+		pipeline.setReaderParameter("TwitterCorpusReader", "fieldsDelimiter", "\\t");
+
+		pipeline.addAnnotator("StanfordPosAnnotator", "com/maalaang/omtwitter/uima/annotator/uima-stanford-pos-annotator.xml");
+
+		pipeline.addAnnotator("SnowballStemAnnotator", "com/maalaang/omtwitter/uima/annotator/uima-snowball-stem-annotator.xml");
+
+		pipeline.addAnnotator("NegExAnnotator", "com/maalaang/omtwitter/uima/annotator/uima-negex-annotator.xml");
+		pipeline.setAnnotatorParameter("NegExAnnotator", "negexWindowSize", 5);
+
+		pipeline.addAnnotator("SentiWordNetAnnotator", "com/maalaang/omtwitter/uima/annotator/uima-sentiment-score-annotator.xml");
+		pipeline.setAnnotatorParameter("SentiWordNetAnnotator", "sentiScoreDicObjectFile", "resource/generated/sentiwordnet/SentiWordNet_3.0.0_20100908.stem.average.dic.object");	
+		pipeline.setAnnotatorParameter("SentiWordNetAnnotator", "maxWindowSize", 5);
+		pipeline.setAnnotatorParameter("SentiWordNetAnnotator", "useStemToFindDic", Boolean.TRUE);
+		pipeline.setAnnotatorParameter("SentiWordNetAnnotator", "usePosToFindDic", Boolean.TRUE);
+		pipeline.setAnnotatorParameter("SentiWordNetAnnotator", "posTagset", "BROWN_CORPUS");
+		pipeline.setAnnotatorParameter("SentiWordNetAnnotator", "annotationTypeName", "com.maalaang.omtwitter.uima.type.SentiWordNetAnnotation");
+		pipeline.setAnnotatorParameter("SentiWordNetAnnotator", "featureNameId", "id");
+		pipeline.setAnnotatorParameter("SentiWordNetAnnotator", "featureNamePositiveScore", "positiveScore");
+		pipeline.setAnnotatorParameter("SentiWordNetAnnotator", "featureNameNegativeScore", "negativeScore");
+		pipeline.setAnnotatorParameter("SentiWordNetAnnotator", "featureNameSubjectiveScore", "subjectiveScore");
+		pipeline.setAnnotatorParameter("SentiWordNetAnnotator", "featureNameObjectiveScore", "objectiveScore");
+		
+		pipeline.addAnnotator("TwitterSentimentScoreAnnotator", "com/maalaang/omtwitter/uima/annotator/uima-twitter-sentiment-score-annotator.xml");
+		pipeline.setAnnotatorParameter("TwitterSentimentScoreAnnotator", "sentiScoreDicObjectFile", "resource/generated/senti_corpus/mobile_devices_20120426.tweet.senti.smiley.removed.merged.neutral.added.dic.object");	
+
+		pipeline.addConsumer("XmiWriteConsumer", "com/maalaang/omtwitter/uima/consumer/uima-xmi-write-consumer.xml");
+		pipeline.setConsumerParameter("XmiWriteConsumer", "outputDirectory", "E:/Development/UIMA Annotation Result/xmi/200");
+
+		pipeline.addConsumer("TwitterSentimentCorpusWriteConsumer", "com/maalaang/omtwitter/uima/consumer/uima-twitter-sentiment-corpus-write-consumer.xml");
+		pipeline.setConsumerParameter("TwitterSentimentCorpusWriteConsumer", "corpusFile", prop.getProperty("senti.corpus.file.search"));
+		pipeline.setConsumerParameter("TwitterSentimentCorpusWriteConsumer", "corpusFields", prop.getProperty("senti.corpus.search.fields"));
+		pipeline.setConsumerParameter("TwitterSentimentCorpusWriteConsumer", "corpusFieldsDelim", prop.getProperty("senti.corpus.search.fields.delim"));
+		pipeline.setConsumerParameter("TwitterSentimentCorpusWriteConsumer", "stopwordSetFile", prop.getProperty("stopword.set.file"));
+		pipeline.setConsumerParameter("TwitterSentimentCorpusWriteConsumer", "filterUserNameWindowSize", Integer.parseInt(prop.getProperty("senti.corpus.search.filter.user.name.window.size")));
+		pipeline.setConsumerParameter("TwitterSentimentCorpusWriteConsumer", "filterUserNamePostLimit", Integer.parseInt(prop.getProperty("senti.corpus.search.filter.user.name.post.limit")));
+		pipeline.setConsumerParameter("TwitterSentimentCorpusWriteConsumer", "filterStopwordThreshold", Integer.parseInt(prop.getProperty("senti.corpus.search.filter.stopword.threshold")));
+		pipeline.setConsumerParameter("TwitterSentimentCorpusWriteConsumer", "filterCosineSimilarityWindowSize", Integer.parseInt(prop.getProperty("senti.corpus.search.cosine.similarity.window.size")));
+		pipeline.setConsumerParameter("TwitterSentimentCorpusWriteConsumer", "filterCosineSimilarityThreshold", Float.parseFloat(prop.getProperty("senti.corpus.search.cosine.similarity.threshold")));
+		pipeline.setConsumerParameter("TwitterSentimentCorpusWriteConsumer", "subjectivityScoreWindowSize", Integer.parseInt(prop.getProperty("senti.corpus.search.subjectivity.score.window.size")));
+		pipeline.setConsumerParameter("TwitterSentimentCorpusWriteConsumer", "swnSubjectivityFactor", Float.parseFloat(prop.getProperty("senti.corpus.search.swn.subjectivity.factor")));
+		pipeline.setConsumerParameter("TwitterSentimentCorpusWriteConsumer", "tscSubjectivityFactor", Float.parseFloat(prop.getProperty("senti.corpus.search.tsc.subjectivity.factor")));
+		pipeline.setConsumerParameter("TwitterSentimentCorpusWriteConsumer", "swnSubjectivityScoreWindowStart", Float.parseFloat(prop.getProperty("senti.corpus.search.swn.subjectivity.score.window.start")));
+		pipeline.setConsumerParameter("TwitterSentimentCorpusWriteConsumer", "tscSubjectivityScoreWindowStart", Float.parseFloat(prop.getProperty("senti.corpus.search.tsc.subjectivity.score.window.start")));
+		
+		pipeline.run(true);
+	}
+	
+	private void writeSentiCorpusFromSampleCorpus() throws InvalidXMLException, IOException, ResourceConfigurationException, ResourceInitializationException {
+		OMTwitterFixedFlowPipeline pipeline = new OMTwitterFixedFlowPipeline();
+
+		pipeline.setReader("TwitterCorpusReader", "com/maalaang/omtwitter/uima/reader/uima-twitter-corpus-reader.xml");
+		pipeline.setReaderParameter("TwitterCorpusReader", "twitterCorpusFile", prop.getProperty("raw.corpus.sample.file"));
+		pipeline.setReaderParameter("TwitterCorpusReader", "fields", "ID AUTHOR DATE QUERY TEXT");
+		pipeline.setReaderParameter("TwitterCorpusReader", "fieldsDelimiter", "\\t");
+
+		pipeline.addAnnotator("StanfordPosAnnotator", "com/maalaang/omtwitter/uima/annotator/uima-stanford-pos-annotator.xml");
+
+		pipeline.addAnnotator("SnowballStemAnnotator", "com/maalaang/omtwitter/uima/annotator/uima-snowball-stem-annotator.xml");
+
+		pipeline.addAnnotator("NegExAnnotator", "com/maalaang/omtwitter/uima/annotator/uima-negex-annotator.xml");
+		pipeline.setAnnotatorParameter("NegExAnnotator", "negexWindowSize", 5);
+
+		pipeline.addAnnotator("SentiWordNetAnnotator", "com/maalaang/omtwitter/uima/annotator/uima-sentiment-score-annotator.xml");
+		pipeline.setAnnotatorParameter("SentiWordNetAnnotator", "sentiScoreDicObjectFile", "resource/generated/sentiwordnet/SentiWordNet_3.0.0_20100908.stem.average.dic.object");	
+		pipeline.setAnnotatorParameter("SentiWordNetAnnotator", "maxWindowSize", 5);
+		pipeline.setAnnotatorParameter("SentiWordNetAnnotator", "useStemToFindDic", Boolean.TRUE);
+		pipeline.setAnnotatorParameter("SentiWordNetAnnotator", "usePosToFindDic", Boolean.TRUE);
+		pipeline.setAnnotatorParameter("SentiWordNetAnnotator", "posTagset", "BROWN_CORPUS");
+		pipeline.setAnnotatorParameter("SentiWordNetAnnotator", "annotationTypeName", "com.maalaang.omtwitter.uima.type.SentiWordNetAnnotation");
+		pipeline.setAnnotatorParameter("SentiWordNetAnnotator", "featureNameId", "id");
+		pipeline.setAnnotatorParameter("SentiWordNetAnnotator", "featureNamePositiveScore", "positiveScore");
+		pipeline.setAnnotatorParameter("SentiWordNetAnnotator", "featureNameNegativeScore", "negativeScore");
+		pipeline.setAnnotatorParameter("SentiWordNetAnnotator", "featureNameSubjectiveScore", "subjectiveScore");
+		pipeline.setAnnotatorParameter("SentiWordNetAnnotator", "featureNameObjectiveScore", "objectiveScore");
+
+		pipeline.addAnnotator("TwitterSentimentScoreAnnotator", "com/maalaang/omtwitter/uima/annotator/uima-twitter-sentiment-score-annotator.xml");
+		pipeline.setAnnotatorParameter("TwitterSentimentScoreAnnotator", "sentiScoreDicObjectFile", "resource/generated/senti_corpus/mobile_devices_20120426.tweet.senti.smiley.removed.merged.neutral.added.dic.object");	
+
+		pipeline.addConsumer("XmiWriteConsumer", "com/maalaang/omtwitter/uima/consumer/uima-xmi-write-consumer.xml");
+		pipeline.setConsumerParameter("XmiWriteConsumer", "outputDirectory", "E:/Development/UIMA Annotation Result/xmi/200");
+
+		pipeline.addConsumer("TwitterSentimentCorpusWriteConsumer", "com/maalaang/omtwitter/uima/consumer/uima-twitter-sentiment-corpus-write-consumer.xml");
+		pipeline.setConsumerParameter("TwitterSentimentCorpusWriteConsumer", "corpusFile", prop.getProperty("senti.corpus.file.sample"));
+		pipeline.setConsumerParameter("TwitterSentimentCorpusWriteConsumer", "corpusFields", prop.getProperty("senti.corpus.sample.fields"));
+		pipeline.setConsumerParameter("TwitterSentimentCorpusWriteConsumer", "corpusFieldsDelim", prop.getProperty("senti.corpus.sample.fields.delim"));
+		pipeline.setConsumerParameter("TwitterSentimentCorpusWriteConsumer", "stopwordSetFile", prop.getProperty("stopword.set.file"));
+		pipeline.setConsumerParameter("TwitterSentimentCorpusWriteConsumer", "filterUserNameWindowSize", Integer.parseInt(prop.getProperty("senti.corpus.sample.filter.user.name.window.size")));
+		pipeline.setConsumerParameter("TwitterSentimentCorpusWriteConsumer", "filterUserNamePostLimit", Integer.parseInt(prop.getProperty("senti.corpus.sample.filter.user.name.post.limit")));
+		pipeline.setConsumerParameter("TwitterSentimentCorpusWriteConsumer", "filterStopwordThreshold", Integer.parseInt(prop.getProperty("senti.corpus.sample.filter.stopword.threshold")));
+		pipeline.setConsumerParameter("TwitterSentimentCorpusWriteConsumer", "filterCosineSimilarityWindowSize", Integer.parseInt(prop.getProperty("senti.corpus.sample.cosine.similarity.window.size")));
+		pipeline.setConsumerParameter("TwitterSentimentCorpusWriteConsumer", "filterCosineSimilarityThreshold", Float.parseFloat(prop.getProperty("senti.corpus.sample.cosine.similarity.threshold")));
+		pipeline.setConsumerParameter("TwitterSentimentCorpusWriteConsumer", "subjectivityScoreWindowSize", Integer.parseInt(prop.getProperty("senti.corpus.sample.subjectivity.score.window.size")));
+		pipeline.setConsumerParameter("TwitterSentimentCorpusWriteConsumer", "swnSubjectivityFactor", Float.parseFloat(prop.getProperty("senti.corpus.sample.swn.subjectivity.factor")));
+		pipeline.setConsumerParameter("TwitterSentimentCorpusWriteConsumer", "tscSubjectivityFactor", Float.parseFloat(prop.getProperty("senti.corpus.sample.tsc.subjectivity.factor")));
+		pipeline.setConsumerParameter("TwitterSentimentCorpusWriteConsumer", "swnSubjectivityScoreWindowStart", Float.parseFloat(prop.getProperty("senti.corpus.sample.swn.subjectivity.score.window.start")));
+		pipeline.setConsumerParameter("TwitterSentimentCorpusWriteConsumer", "tscSubjectivityScoreWindowStart", Float.parseFloat(prop.getProperty("senti.corpus.sample.tsc.subjectivity.score.window.start")));
+		
+		pipeline.run(true);	
+	}
+	
+	private void mergeSentiCorpus() {
+		
+	}
 }

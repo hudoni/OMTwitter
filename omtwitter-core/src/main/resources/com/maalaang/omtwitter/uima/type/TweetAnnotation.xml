@@ -12,17 +12,27 @@
       <features>
         <featureDescription>
           <name>author</name>
-          <description>user screen name of a tweet</description>
+          <description>Screen name of the user who posted a tweet</description>
           <rangeTypeName>uima.cas.String</rangeTypeName>
         </featureDescription>
         <featureDescription>
           <name>polarity</name>
-          <description>overall sentiment polarity of a tweet [POS|NEG|NEU]</description>
+          <description>Overall sentiment polarity of a tweet [POS|NEG|NEU] or [SBJ|OBJ]</description>
           <rangeTypeName>uima.cas.String</rangeTypeName>
         </featureDescription>
         <featureDescription>
           <name>query</name>
-          <description>query words that were used for collecting a tweet</description>
+          <description>Query that was used for collecting a tweet</description>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>id</name>
+          <description>ID of a tweet</description>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>date</name>
+          <description>String representation of the date when a tweet was posted</description>
           <rangeTypeName>uima.cas.String</rangeTypeName>
         </featureDescription>
       </features>

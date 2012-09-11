@@ -1,15 +1,13 @@
 /**
  * 
  */
-package com.maalaang.omtwitter.corpus;
+package com.maalaang.omtwitter.text;
 
 import java.util.ArrayList;
 
 import org.apache.log4j.Logger;
 
 import com.maalaang.omtwitter.model.OMTweet;
-import com.maalaang.omtwitter.text.OMTweetToken;
-import com.maalaang.omtwitter.text.OMTweetTokenizer;
 
 /**
  * @author Sangwon Park
@@ -67,7 +65,7 @@ public class TweetFilterPipeline {
 		
 		int i = 0;
 		boolean res = false;
-		boolean filtered = false;
+		boolean filtered = true;
 		
 		for (TweetFilter f : filterList) {
 			f.next(tweet, tokenList);
@@ -75,7 +73,7 @@ public class TweetFilterPipeline {
 			
 			if (res) {
 				logger.debug(filterNames[i] + " filtered out - " + tweet);
-				filtered = true;
+				filtered = false;
 			}
 			
 			filterResults[i++] = res;

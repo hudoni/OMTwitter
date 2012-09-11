@@ -44,28 +44,29 @@ public class OMTwitterCorpusFileWriter {
 	}
 	
 	public void write(OMTweet tweet) throws IOException {
+		String s = null;
 		for (int i = 0; i < fields.length; i++) {
 			switch (fields[i]) {
 			case OMTwitterCorpusFile.FIELD_IGNORE:	
 				bw.write(OMTwitterCorpusFile.FIELD_EMPTY_STR);
 				break;
 			case OMTwitterCorpusFile.FIELD_ID:
-				bw.write(String.valueOf(tweet.getId()));
+				bw.write((s = tweet.getId()) != null ? s : OMTwitterCorpusFile.FIELD_EMPTY_STR);
 				break;
 			case OMTwitterCorpusFile.FIELD_AUTHOR:
-				bw.write(tweet.getAuthor());
+				bw.write((s = tweet.getAuthor()) != null ? s : OMTwitterCorpusFile.FIELD_EMPTY_STR);
 				break;
 			case OMTwitterCorpusFile.FIELD_TEXT:
-				bw.write(tweet.getText());
+				bw.write((s = tweet.getText()) != null ? s : OMTwitterCorpusFile.FIELD_EMPTY_STR);
 				break;
 			case OMTwitterCorpusFile.FIELD_DATE:
-				bw.write(tweet.getDateString());
+				bw.write((s = tweet.getDateString()) != null ? s : OMTwitterCorpusFile.FIELD_EMPTY_STR);
 				break;
 			case OMTwitterCorpusFile.FIELD_POLARITY:
 				bw.write(tweet.getPolarityString());
 				break;
 			case OMTwitterCorpusFile.FIELD_QUERY:
-				bw.write(tweet.getQuery());
+				bw.write((s = tweet.getQuery()) != null ? s : OMTwitterCorpusFile.FIELD_EMPTY_STR);
 				break;
 			default:
 				throw new IllegalPathStateException();

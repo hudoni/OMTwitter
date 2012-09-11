@@ -26,7 +26,7 @@ public class TwitterCorpusReader extends CollectionReader_ImplBase {
 	
 	public static final String PARAM_TWITTER_CORPUS_FILE = "twitterCorpusFile";
 	public static final String PARAM_FIELDS = "fields";
-	public static final String PARAM_SPLIT_REGEX = "splitRegex";
+	public static final String PARAM_FIELDS_DELIM = "fieldsDelimiter";
 	
 	private OMTwitterReader reader = null;
 	
@@ -39,17 +39,17 @@ public class TwitterCorpusReader extends CollectionReader_ImplBase {
 		logger = getLogger();
 		
 		try {
-			String fieldNameStr = (String) getConfigParameterValue(PARAM_FIELDS);
-			String splitRegex = (String) getConfigParameterValue(PARAM_SPLIT_REGEX);
+			String fieldsNameStr = (String) getConfigParameterValue(PARAM_FIELDS);
+			String fieldsDelim = (String) getConfigParameterValue(PARAM_FIELDS_DELIM);
 			
-			String[] fieldNames = fieldNameStr.split("\\s+");
+			String[] fieldNames = fieldsNameStr.split("\\s+");
 			int[] fields = new int[fieldNames.length];
 			
 			for (int i = 0; i < fieldNames.length; i++) {
 				fields[i] = OMTwitterCorpusFileReader.fieldNameToId(fieldNames[i]);
 			}
 			
-			reader = new OMTwitterCorpusFileReader((String)getConfigParameterValue(PARAM_TWITTER_CORPUS_FILE), splitRegex, fields);
+			reader = new OMTwitterCorpusFileReader((String)getConfigParameterValue(PARAM_TWITTER_CORPUS_FILE), fieldsDelim, fields);
 			
 		} catch (UnsupportedEncodingException e) {
 			logger.log(Level.SEVERE, e.getMessage());
@@ -80,9 +80,11 @@ public class TwitterCorpusReader extends CollectionReader_ImplBase {
 		TweetAnnotation tweetAnn = new TweetAnnotation(jcas);
 		tweetAnn.setBegin(0);
 		tweetAnn.setEnd(tweet.getText().length());
+		tweetAnn.setId(tweet.getId());
 		tweetAnn.setAuthor(tweet.getAuthor());
-		tweetAnn.setPolarity(tweet.getPolarityString());
+		tweetAnn.setDate(tweet.getDateString());
 		tweetAnn.setQuery(tweet.getQuery());
+		tweetAnn.setPolarity(tweet.getPolarityString());
 		tweetAnn.addToIndexes();
 		
 		logger.log(Level.FINE, tweet.toString());

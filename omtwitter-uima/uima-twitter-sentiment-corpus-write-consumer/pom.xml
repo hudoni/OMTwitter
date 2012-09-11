@@ -3,11 +3,11 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.maalaang.omtwitter</groupId>
-	<artifactId>uima-twitter-sentiment-score-annotator</artifactId>
+	<artifactId>uima-twitter-sentiment-corpus-write-consumer</artifactId>
 	<version>1.0.0</version>
 	<packaging>jar</packaging>
 
-	<name>UIMA Annotator: ${project.artifactId}</name>
+	<name>UIMA Consumer: ${project.artifactId}</name>
 	<url>http://maven.apache.org</url>
 
 	<properties>

@@ -26,9 +26,9 @@ import com.maalaang.omtwitter.uima.ml.SvmFVFactory;
  *
  */
 public class SvmTrainingDataWriteConsumer extends CasConsumer_ImplBase {
-	public static final String PARAM_SVM_FV_FACTORY_CLASS_NAME = "svmFVFactoryClassName";
-	public static final String PARAM_SVM_TARGET_EXTRACTOR_CLASS_NAME = "svmTargetExtractorClassName";
-	public static final String PARAM_SVM_TRAINING_DATA_FILE = "svmTrainingDataFile";
+	private static final String PARAM_SVM_FV_FACTORY_CLASS_NAME = "svmFVFactoryClassName";
+	private static final String PARAM_SVM_TARGET_EXTRACTOR_CLASS_NAME = "svmTargetExtractorClassName";
+	private static final String PARAM_SVM_TRAINING_DATA_FILE = "svmTrainingDataFile";
 	
 	private Logger logger = null;
 	

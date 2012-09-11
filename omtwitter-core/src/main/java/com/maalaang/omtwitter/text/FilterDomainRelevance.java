@@ -1,14 +1,13 @@
 /**
  * 
  */
-package com.maalaang.omtwitter.corpus;
+package com.maalaang.omtwitter.text;
 
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 
 import com.maalaang.omtwitter.model.OMTweet;
-import com.maalaang.omtwitter.text.OMTweetToken;
 
 /**
  * @author Sangwon Park

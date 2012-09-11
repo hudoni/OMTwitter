@@ -21,7 +21,7 @@ public class TrainPNSvmClassifier {
 			pipeline.setReader("TwitterCorpusReader", "com/maalaang/omtwitter/uima/reader/uima-twitter-corpus-reader.xml");
 			pipeline.setReaderParameter("TwitterCorpusReader", "twitterCorpusFile", "corpus/mobile_devices_20120426.tweet.senti.smiley.removed.merged");
 			pipeline.setReaderParameter("TwitterCorpusReader", "fields", "POLARITY QUERY AUTHOR TEXT");
-			pipeline.setReaderParameter("TwitterCorpusReader", "splitRegex", "\\t");
+			pipeline.setReaderParameter("TwitterCorpusReader", "fieldsDelimiter", "\\t");
 
 			pipeline.addAnnotator("StanfordPosAnnotator", "com/maalaang/omtwitter/uima/annotator/uima-stanford-pos-annotator.xml");
 

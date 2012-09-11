@@ -142,7 +142,11 @@ public class OMTweet_Impl implements OMTweet {
 	 * @see com.maalaang.omtwitter.model.OMTweet#getDateString()
 	 */
 	public String getDateString() {
-		return DATE_FORMAT.format(date);
+		if (date == null) {
+			return null;
+		} else {
+			return DATE_FORMAT.format(date);
+		}
 	}
 
 	/* (non-Javadoc)

@@ -16,18 +16,18 @@ import java.util.Set;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
-import com.maalaang.omtwitter.corpus.FilterCosineSimilarity;
-import com.maalaang.omtwitter.corpus.FilterDomainRelevance;
-import com.maalaang.omtwitter.corpus.FilterHashtagUsage;
-import com.maalaang.omtwitter.corpus.FilterStopword;
-import com.maalaang.omtwitter.corpus.FilterUserName;
-import com.maalaang.omtwitter.corpus.TweetFilterPipeline;
 import com.maalaang.omtwitter.io.CollectionTextReader;
 import com.maalaang.omtwitter.io.LogSystemStream;
 import com.maalaang.omtwitter.io.OMTwitterCorpusFile;
 import com.maalaang.omtwitter.io.OMTwitterCorpusFileReader;
 import com.maalaang.omtwitter.io.OMTwitterReader;
 import com.maalaang.omtwitter.model.OMTweet;
+import com.maalaang.omtwitter.text.FilterCosineSimilarity;
+import com.maalaang.omtwitter.text.FilterDomainRelevance;
+import com.maalaang.omtwitter.text.FilterHashtagUsage;
+import com.maalaang.omtwitter.text.FilterStopword;
+import com.maalaang.omtwitter.text.FilterUserName;
+import com.maalaang.omtwitter.text.TweetFilterPipeline;
 import com.maalaang.omtwitter.text.WordPattern;
 
 import edu.stanford.nlp.ling.HasWord;

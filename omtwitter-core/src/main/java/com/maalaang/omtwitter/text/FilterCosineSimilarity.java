@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.maalaang.omtwitter.corpus;
+package com.maalaang.omtwitter.text;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -12,7 +12,6 @@ import org.apache.commons.math3.linear.OpenMapRealVector;
 import org.apache.commons.math3.linear.RealVector;
 
 import com.maalaang.omtwitter.model.OMTweet;
-import com.maalaang.omtwitter.text.OMTweetToken;
 
 /**
  * @author Sangwon Park

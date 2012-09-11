@@ -13,8 +13,8 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 import org.apache.uima.jcas.tcas.Annotation_Type;
 
-/** single tweet annotation
- * Updated by JCasGen Fri Aug 10 12:48:42 CEST 2012
+/** Single tweet annotation
+ * Updated by JCasGen Mon Sep 10 22:43:33 CEST 2012
  * @generated */
 public class TweetAnnotation_Type extends Annotation_Type {
   /** @generated */
@@ -94,6 +94,42 @@ public class TweetAnnotation_Type extends Annotation_Type {
     ll_cas.ll_setStringValue(addr, casFeatCode_query, v);}
     
   
+ 
+  /** @generated */
+  final Feature casFeat_id;
+  /** @generated */
+  final int     casFeatCode_id;
+  /** @generated */ 
+  public String getId(int addr) {
+        if (featOkTst && casFeat_id == null)
+      jcas.throwFeatMissing("id", "com.maalaang.omtwitter.uima.type.TweetAnnotation");
+    return ll_cas.ll_getStringValue(addr, casFeatCode_id);
+  }
+  /** @generated */    
+  public void setId(int addr, String v) {
+        if (featOkTst && casFeat_id == null)
+      jcas.throwFeatMissing("id", "com.maalaang.omtwitter.uima.type.TweetAnnotation");
+    ll_cas.ll_setStringValue(addr, casFeatCode_id, v);}
+    
+  
+ 
+  /** @generated */
+  final Feature casFeat_date;
+  /** @generated */
+  final int     casFeatCode_date;
+  /** @generated */ 
+  public String getDate(int addr) {
+        if (featOkTst && casFeat_date == null)
+      jcas.throwFeatMissing("date", "com.maalaang.omtwitter.uima.type.TweetAnnotation");
+    return ll_cas.ll_getStringValue(addr, casFeatCode_date);
+  }
+  /** @generated */    
+  public void setDate(int addr, String v) {
+        if (featOkTst && casFeat_date == null)
+      jcas.throwFeatMissing("date", "com.maalaang.omtwitter.uima.type.TweetAnnotation");
+    ll_cas.ll_setStringValue(addr, casFeatCode_date, v);}
+    
+  
 
 
 
@@ -114,6 +150,14 @@ public class TweetAnnotation_Type extends Annotation_Type {
  
     casFeat_query = jcas.getRequiredFeatureDE(casType, "query", "uima.cas.String", featOkTst);
     casFeatCode_query  = (null == casFeat_query) ? JCas.INVALID_FEATURE_CODE : ((FeatureImpl)casFeat_query).getCode();
+
+ 
+    casFeat_id = jcas.getRequiredFeatureDE(casType, "id", "uima.cas.String", featOkTst);
+    casFeatCode_id  = (null == casFeat_id) ? JCas.INVALID_FEATURE_CODE : ((FeatureImpl)casFeat_id).getCode();
+
+ 
+    casFeat_date = jcas.getRequiredFeatureDE(casType, "date", "uima.cas.String", featOkTst);
+    casFeatCode_date  = (null == casFeat_date) ? JCas.INVALID_FEATURE_CODE : ((FeatureImpl)casFeat_date).getCode();
 
   }
 }

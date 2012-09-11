@@ -25,8 +25,8 @@ For example: ID DATE AUTHOR TEXT</description>
         <mandatory>true</mandatory>
       </configurationParameter>
       <configurationParameter>
-        <name>splitRegex</name>
-        <description>The regular expression for splitting the fields in a line. If the fields are separated by tab, specify \n.</description>
+        <name>fieldsDelimiter</name>
+        <description>The regular expression for splitting the fields in a line.</description>
         <type>String</type>
         <multiValued>false</multiValued>
         <mandatory>true</mandatory>

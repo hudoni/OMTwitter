@@ -9,9 +9,9 @@ import org.apache.uima.jcas.cas.TOP_Type;
 import org.apache.uima.jcas.tcas.Annotation;
 
 
-/** single tweet annotation
- * Updated by JCasGen Fri Aug 10 12:48:42 CEST 2012
- * XML source: E:/Workspaces/GitHub/omtwitter/omtwitter-core/src/main/resources/com/maalaang/omtwitter/uima/type/TweetAnnotation.xml
+/** Single tweet annotation
+ * Updated by JCasGen Mon Sep 10 22:43:33 CEST 2012
+ * XML source: E:/Workspaces/GitHub/OMTwitter/omtwitter-core/src/main/resources/com/maalaang/omtwitter/uima/type/TweetAnnotation.xml
  * @generated */
 public class TweetAnnotation extends Annotation {
   /** @generated
@@ -110,6 +110,42 @@ public class TweetAnnotation extends Annotation {
     if (TweetAnnotation_Type.featOkTst && ((TweetAnnotation_Type)jcasType).casFeat_query == null)
       jcasType.jcas.throwFeatMissing("query", "com.maalaang.omtwitter.uima.type.TweetAnnotation");
     jcasType.ll_cas.ll_setStringValue(addr, ((TweetAnnotation_Type)jcasType).casFeatCode_query, v);}    
+   
+    
+  //*--------------*
+  //* Feature: id
+
+  /** getter for id - gets ID of a tweet
+   * @generated */
+  public String getId() {
+    if (TweetAnnotation_Type.featOkTst && ((TweetAnnotation_Type)jcasType).casFeat_id == null)
+      jcasType.jcas.throwFeatMissing("id", "com.maalaang.omtwitter.uima.type.TweetAnnotation");
+    return jcasType.ll_cas.ll_getStringValue(addr, ((TweetAnnotation_Type)jcasType).casFeatCode_id);}
+    
+  /** setter for id - sets ID of a tweet 
+   * @generated */
+  public void setId(String v) {
+    if (TweetAnnotation_Type.featOkTst && ((TweetAnnotation_Type)jcasType).casFeat_id == null)
+      jcasType.jcas.throwFeatMissing("id", "com.maalaang.omtwitter.uima.type.TweetAnnotation");
+    jcasType.ll_cas.ll_setStringValue(addr, ((TweetAnnotation_Type)jcasType).casFeatCode_id, v);}    
+   
+    
+  //*--------------*
+  //* Feature: date
+
+  /** getter for date - gets String representation of the date when a tweet was posted
+   * @generated */
+  public String getDate() {
+    if (TweetAnnotation_Type.featOkTst && ((TweetAnnotation_Type)jcasType).casFeat_date == null)
+      jcasType.jcas.throwFeatMissing("date", "com.maalaang.omtwitter.uima.type.TweetAnnotation");
+    return jcasType.ll_cas.ll_getStringValue(addr, ((TweetAnnotation_Type)jcasType).casFeatCode_date);}
+    
+  /** setter for date - sets String representation of the date when a tweet was posted 
+   * @generated */
+  public void setDate(String v) {
+    if (TweetAnnotation_Type.featOkTst && ((TweetAnnotation_Type)jcasType).casFeat_date == null)
+      jcasType.jcas.throwFeatMissing("date", "com.maalaang.omtwitter.uima.type.TweetAnnotation");
+    jcasType.ll_cas.ll_setStringValue(addr, ((TweetAnnotation_Type)jcasType).casFeatCode_date, v);}    
   }
 
     
