@@ -13,9 +13,12 @@ import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Random;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -310,5 +313,31 @@ public class TwitterCorpusConstructor {
 			logger.info("open twitter sample stream");
 			twitterStream.sample();
 		}
+	}
+	
+	public static int[] resizeToLimitRandom(int corpusSize, int limit, long seed) {
+		Random random = new Random(seed);
+		Set<Integer> id = new HashSet<Integer>();
+		int cnt = 0;
+		int rand = 0;
+		
+		if (cnt < limit) {
+			rand = random.nextInt(corpusSize);
+			if (!id.contains(rand)) {
+				cnt++;
+				id.add(rand);
+			}
+		}
+		
+		ArrayList<Integer> list = new ArrayList<Integer>(id);
+		Collections.sort(list);
+		
+		int[] chosen = new int[list.size()];
+		int idx = 0;
+		for (Integer i : list) {
+			chosen[idx++] = i;
+		}
+		
+		return chosen;
 	}
 }

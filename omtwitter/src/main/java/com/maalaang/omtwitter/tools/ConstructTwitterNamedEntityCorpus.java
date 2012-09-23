@@ -103,7 +103,7 @@ public class ConstructTwitterNamedEntityCorpus {
 		
 		while (searchCorpusReader.hasNext()) {
 			OMTweet tweet = searchCorpusReader.next();
-			if (searchCorpusFilterPipe.filter(tweet)) {
+			if (searchCorpusFilterPipe.check(tweet)) {
 				writeNEAnnotatedTweet(tweet);
 				searchCorpusWriteCnt++;
 			}
@@ -137,7 +137,7 @@ public class ConstructTwitterNamedEntityCorpus {
 		
 		while (sampleCorpusReader.hasNext()) {
 			OMTweet tweet = sampleCorpusReader.next();
-			if (sampleCorpusFilterPipe.filter(tweet)) {
+			if (sampleCorpusFilterPipe.check(tweet)) {
 				writeNEAnnotatedTweet(tweet);
 				if (++sampleCorpusWriteCnt > sampleCorpusWriteLimit) {
 					break;

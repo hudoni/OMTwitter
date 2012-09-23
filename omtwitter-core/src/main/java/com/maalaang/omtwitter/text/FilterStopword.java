@@ -30,14 +30,14 @@ public class FilterStopword implements TweetFilter {
 	public void next(OMTweet tweet, OMTweetToken[] tokenList) {
 		int cnt = 0;
 		for (OMTweetToken tok : tokenList) {
-			if (stopwords.contains(tok)) {
+			if (stopwords.contains(tok.getText())) {
 				if (++cnt > stopwordNum) {
-					filtered = true;
-					break;
+					filtered = false;
+					return;
 				}
 			}
 		}
-		filtered = false;
+		filtered = true;
 	}
 
 	public boolean isFilteredOut() {

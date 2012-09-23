@@ -2,6 +2,8 @@ package com.maalaang.omtwitter.uima.consumer;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.Set;
 
@@ -51,6 +53,8 @@ public class TwitterSentimentCorpusWriteConsumer extends CasConsumer_ImplBase {
 	private static final String PARAM_SWN_SUBJECTIVITY_SCORE_WINDOW_START= "swnSubjectivityScoreWindowStart";
 	private static final String PARAM_TSC_SUBJECTIVITY_SCORE_WINDOW_START= "tscSubjectivityScoreWindowStart";
 	
+	private SimpleDateFormat dateFormat = null;
+	
 	private OMTwitterCorpusFileWriter corpusWriter = null;
 	private BufferedWriter bw = null;
 	private EmoticonProcessor emoticonProcessor = null;
@@ -94,6 +98,8 @@ public class TwitterSentimentCorpusWriteConsumer extends CasConsumer_ImplBase {
 			throw new ResourceInitializationException(e);
 		}
 		
+		dateFormat = new SimpleDateFormat(OMTweet.DATE_FORMAT);
+		
 		filterPipe = new TweetFilterPipeline();
 		filterPipe.add(new FilterUserName((Integer) getConfigParameterValue(PARAM_FILTER_USER_NAME_WINDOW_SIZE), (Integer) getConfigParameterValue(PARAM_FILTER_USER_NAME_POST_LIMIT)));
 		filterPipe.add(new FilterStopword(stopwords, (Integer) getConfigParameterValue(PARAM_FILTER_STOPWORD_THRESHOLD)));
@@ -125,7 +131,7 @@ public class TwitterSentimentCorpusWriteConsumer extends CasConsumer_ImplBase {
 				swnSbjScoreSum += swnAnn.getPositiveScore() + swnAnn.getNegativeScore();
 			}
 			int swnAnnSize = swnAnnIndex.size();
-			double swnSbjScore = swnAnnSize > 0 ? swnSbjScoreSum / swnAnnSize : Double.NaN;
+			double swnSbjScore = swnAnnSize > 0 ? swnSbjScoreSum / swnAnnSize : -1.0;
 			
 			double tscSbjScoreSum = 0.0;
 			AnnotationIndex<Annotation> tscAnnIndex = jcas.getAnnotationIndex(TwitterSentiCorpusAnnotation.type);
@@ -135,14 +141,20 @@ public class TwitterSentimentCorpusWriteConsumer extends CasConsumer_ImplBase {
 				tscSbjScoreSum += tscAnn.getPositiveScore() + tscAnn.getNegativeScore();
 			}
 			int tscAnnSize = tscAnnIndex.size();
-			double tscSbjScore = tscAnnSize > 0 ? tscSbjScoreSum / tscAnnSize : Double.NaN;
+			double tscSbjScore = tscAnnSize > 0 ? tscSbjScoreSum / tscAnnSize : -1.0;
 			
 			logger.log(Level.FINE, "swnSbjScore=" + swnSbjScore + ", tscSbjScore=" + tscSbjScore);
 			
 			// do filtering
-			OMTweet tweet = new OMTweet_Impl(tweetAnn.getId(), tweetAnn.getAuthor(), tweetAnn.getDate(), tweetAnn.getCoveredText(), tweetAnn.getQuery());
+			Date date = null;
+			try {
+				date = dateFormat.parse(tweetAnn.getDate());
+			} catch (Exception e) {
+				logger.log(Level.WARNING, "failed to parse a date - " + e.getMessage());
+			}
+			OMTweet tweet = new OMTweet_Impl(tweetAnn.getId(), tweetAnn.getAuthor(), date, tweetAnn.getCoveredText(), tweetAnn.getQuery());
 			
-			if (!filterPipe.filter(tweet)) {
+			if (!filterPipe.check(tweet)) {
 				maintainSbjScoreWindow(swnSbjScore, tscSbjScore);
 				if (logger.isLoggable(Level.FINE)) {
 					logger.log(Level.FINE, "[SKIP] filtered out - " + tweet);
@@ -165,7 +177,7 @@ public class TwitterSentimentCorpusWriteConsumer extends CasConsumer_ImplBase {
 			}
 			
 			// write neutral tweets filtered based on subjectivity scores compared with the scores of the windows
-			if (swnSbjScore != Double.NaN && tscSbjScore != Double.NaN && swnSbjScore > 0.0 && tscSbjScore > 0.0) {
+			if (swnSbjScore > 0.0 && tscSbjScore > 0.0) {
 				if (swnSbjScoreWindow.size() < sbjScoreWindowSize) {
 					if (swnSbjScore < swnSbjScoreWindowStart && tscSbjScore < tscSbjScoreWindowStart) {
 						tweet.setPolarity(OMTweet.POLARITY_NEUTRAL);
@@ -201,7 +213,7 @@ public class TwitterSentimentCorpusWriteConsumer extends CasConsumer_ImplBase {
 	 * @param swnSbjScore
 	 */
 	private void maintainSbjScoreWindow(double swnSbjScore, double tscSbjScore) {
-		if (swnSbjScore == Double.NaN) {
+		if (swnSbjScore > 0.0) {
 			swnSbjScoreWindow.add(swnSbjScore);
 			swnSbjScoreWindowSum += swnSbjScore;
 			if (swnSbjScoreWindow.size() > sbjScoreWindowSize) {
@@ -209,7 +221,7 @@ public class TwitterSentimentCorpusWriteConsumer extends CasConsumer_ImplBase {
 			}
 		}
 		
-		if (tscSbjScore == Double.NaN) {
+		if (tscSbjScore > 0.0) {
 			tscSbjScoreWindow.add(tscSbjScore);
 			tscSbjScoreWindowSum += tscSbjScore;
 			if (tscSbjScoreWindow.size() > sbjScoreWindowSize) {

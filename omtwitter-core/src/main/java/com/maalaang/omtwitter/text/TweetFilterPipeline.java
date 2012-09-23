@@ -53,7 +53,7 @@ public class TweetFilterPipeline {
 	 * @param tweet
 	 * @return true if the specified tweet is passed through all the filters; otherwise, false.
 	 */
-	public boolean filter(OMTweet tweet) {
+	public boolean check(OMTweet tweet) {
 		OMTweetToken[] tokenList = tweetTokenizer.tokenize(tweet.getText().toLowerCase());
 		
 		if (logger.isDebugEnabled()) {
@@ -65,7 +65,7 @@ public class TweetFilterPipeline {
 		
 		int i = 0;
 		boolean res = false;
-		boolean filtered = true;
+		boolean passed = true;
 		
 		for (TweetFilter f : filterList) {
 			f.next(tweet, tokenList);
@@ -73,13 +73,13 @@ public class TweetFilterPipeline {
 			
 			if (res) {
 				logger.debug(filterNames[i] + " filtered out - " + tweet);
-				filtered = false;
+				passed = false;
 			}
 			
 			filterResults[i++] = res;
 		}
 		
-		return filtered;
+		return passed;
 	}
 	
 	public void close() {

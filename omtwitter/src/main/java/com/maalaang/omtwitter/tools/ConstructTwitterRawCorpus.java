@@ -15,7 +15,6 @@ import com.maalaang.omtwitter.corpus.TwitterQueryGenerator;
 import com.maalaang.omtwitter.io.CollectionTextReader;
 import com.maalaang.omtwitter.io.CollectionTextWriter;
 import com.maalaang.omtwitter.io.OMTwitterCorpusFile;
-import com.maalaang.omtwitter.io.OMTwitterCorpusFileReader;
 
 public class ConstructTwitterRawCorpus {
 
@@ -48,7 +47,7 @@ public class ConstructTwitterRawCorpus {
 					OMTwitterCorpusFile.FIELD_QUERY,
 					OMTwitterCorpusFile.FIELD_TEXT };
 			
-			Map<String,Integer> searchUserStatusFreqMap = TwitterCorpusStat.userStatusFreq(new OMTwitterCorpusFileReader(prop.getProperty("raw.corpus.search.file"), searchCorpusFields));
+			Map<String,Integer> searchUserStatusFreqMap = TwitterCorpusStat.userStatusFreq(prop.getProperty("raw.corpus.search.file"), "\\s+", searchCorpusFields);
 			CollectionTextWriter.writeMapStringInteger(searchUserStatusFreqMap, prop.getProperty("raw.corpus.search.user.freq.file"), true);
 			
 			// sample stream
@@ -59,7 +58,7 @@ public class ConstructTwitterRawCorpus {
 					OMTwitterCorpusFile.FIELD_DATE,
 					OMTwitterCorpusFile.FIELD_TEXT };
 			
-			Map<String,Integer> sampleUserStatusFreqMap = TwitterCorpusStat.userStatusFreq(new OMTwitterCorpusFileReader(prop.getProperty("raw.corpus.sample.file"), sampleCorpusFields));
+			Map<String,Integer> sampleUserStatusFreqMap = TwitterCorpusStat.userStatusFreq(prop.getProperty("raw.corpus.sample.file"), "\\s+", sampleCorpusFields);
 			CollectionTextWriter.writeMapStringInteger(sampleUserStatusFreqMap, prop.getProperty("raw.corpus.sample.user.freq.file"), true);
 			
 		} catch (Exception e) {

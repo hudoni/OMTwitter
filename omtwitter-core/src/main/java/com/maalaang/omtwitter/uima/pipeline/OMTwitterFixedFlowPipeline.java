@@ -197,6 +197,7 @@ public class OMTwitterFixedFlowPipeline {
 			
 			public void aborted() {
 				logger.log(Level.SEVERE, "CPM aborted");
+				isProcessing = false;
 			}
 			
 			public void entityProcessComplete(CAS arg0, EntityProcessStatus arg1) {

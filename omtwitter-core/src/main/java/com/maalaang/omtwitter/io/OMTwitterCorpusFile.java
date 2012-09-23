@@ -33,5 +33,15 @@ public class OMTwitterCorpusFile {
 		}
 		throw new IllegalArgumentException();
 	}
+	
+	public static int[] fieldNameToId(String fieldName, String fieldNameDelim) {
+		String[] fieldNames = fieldName.split(fieldNameDelim);
+		int[] fields = new int[fieldNames.length];
+
+		for (int i = 0; i < fieldNames.length; i++) {
+			fields[i] = OMTwitterCorpusFileReader.fieldNameToId(fieldNames[i]);
+		}
+		return fields;
+	}
 
 }

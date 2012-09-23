@@ -35,7 +35,11 @@ public class OMTwitterCorpusFileWriter {
 	}
 	
 	public OMTwitterCorpusFileWriter(String file, String fieldDelimiter, int[] fields) throws UnsupportedEncodingException, FileNotFoundException {
-		this.bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), OMTwitterCorpusFile.FILE_CHARSET));
+		this(file, fieldDelimiter, fields, false);
+	}
+	
+	public OMTwitterCorpusFileWriter(String file, String fieldDelimiter, int[] fields, boolean append) throws UnsupportedEncodingException, FileNotFoundException {
+		this.bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file, append), OMTwitterCorpusFile.FILE_CHARSET));
 		this.fields = fields;
 		this.fieldDelimiter = fieldDelimiter;
 		this.logger = Logger.getLogger(this.getClass());

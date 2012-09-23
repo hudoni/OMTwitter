@@ -38,27 +38,8 @@ public class OMTweet_Impl implements OMTweet {
 		this(id, author, date, text, null, POLARITY_NOT_SPECIFIED);
 	}
 	
-	public OMTweet_Impl(String id, String author, String date, String text) {
-		this(id, author, null, text, null, POLARITY_NOT_SPECIFIED);
-		try {
-			this.date = DATE_FORMAT.parse(date);
-		} catch (ParseException e) {
-			throw new IllegalArgumentException(e);
-		}
-	}
-	
 	public OMTweet_Impl(String id, String author, Date date, String text, String query) {
 		this(id, author, date, text, query, POLARITY_NOT_SPECIFIED);
-	}
-	
-	public OMTweet_Impl(String id, String author, String date, String text, String query) {
-		this(id, author, null, text, query, POLARITY_NOT_SPECIFIED);
-		
-		try {
-			this.date = DATE_FORMAT.parse(date);
-		} catch (ParseException e) {
-			throw new IllegalArgumentException(e);
-		}
 	}
 	
 	public OMTweet_Impl(String id, String author, Date date, String text, String query, int polarity) {
