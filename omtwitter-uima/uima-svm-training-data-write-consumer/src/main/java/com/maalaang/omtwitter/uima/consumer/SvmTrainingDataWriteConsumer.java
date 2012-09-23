@@ -72,7 +72,12 @@ public class SvmTrainingDataWriteConsumer extends CasConsumer_ImplBase {
 		}
 		
 		SvmFeatureVector fv = fvFactory.createFeatureVectorFromJCas(jcas);
+		
 		int target = targetExtractor.extractTargetFromJCas(jcas);
+		
+		if (target == 0) {
+			return;
+		}
 		
 		try {
 			bw.write(String.valueOf(target));

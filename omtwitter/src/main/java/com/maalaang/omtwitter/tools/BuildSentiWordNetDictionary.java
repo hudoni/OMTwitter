@@ -25,7 +25,7 @@ public class BuildSentiWordNetDictionary {
 			Properties prop = new Properties();
 			prop.load(new InputStreamReader(new FileInputStream(args[0]), "UTF-8"));
 			
-			buildSentiWordNetDictionary.run(prop.getProperty("sentiWordNetDicTextFile"), prop.getProperty("sentiWordNetDicObjectFile"));
+			buildSentiWordNetDictionary.run(prop.getProperty("swn.dic.text"), prop.getProperty("swn.dic.object"));
 			
 		} catch (IOException e) {
 			e.printStackTrace();

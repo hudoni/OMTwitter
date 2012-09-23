@@ -175,7 +175,7 @@ public class SentimentScoreAnnotator extends CasAnnotator_ImplBase {
 			tokenList.clear();
 			
 			FSIterator<AnnotationFS> tokenAnnIt = aCAS.getAnnotationIndex(tokenType).subiterator(sentAnn);
-			if (useStemToFindDic) {
+			if (!useStemToFindDic) {
 				while (tokenAnnIt.hasNext()) {
 					tokenAnn = (TokenAnnotation) tokenAnnIt.next();
 					tokenList.add(tokenAnn.getCoveredText());

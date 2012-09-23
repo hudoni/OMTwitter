@@ -51,13 +51,8 @@ public class BuildTwitterSentiCorpusDictionary {
 			Properties prop = new Properties();
 			prop.load(new InputStreamReader(new FileInputStream(args[0]), "UTF-8"));
 		
-			int[] corpusFields = new int[] { OMTwitterCorpusFile.FIELD_POLARITY,
-					OMTwitterCorpusFile.FIELD_QUERY,
-					OMTwitterCorpusFile.FIELD_AUTHOR,
-					OMTwitterCorpusFile.FIELD_TEXT };
-			
-			builder.buildDicFile(new OMTwitterCorpusFileReader(prop.getProperty("sentiCorpusFile"), corpusFields), prop.getProperty("sentiCorpusDicFile"));
-			builder.createObjectFile(prop.getProperty("sentiCorpusDicFile"), prop.getProperty("sentiCorpusDicObjectFile"));
+			builder.buildDicFile(prop.getProperty("tsc.file"), OMTwitterCorpusFile.fieldNameToId(prop.getProperty("senti.corpus.fields"), "\\s+"), prop.getProperty("senti.corpus.fields.delim"), prop.getProperty("tsc.dic.text"));
+			builder.createObjectFile(prop.getProperty("tsc.dic.text"), prop.getProperty("tsc.dic.object"));
 			
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -116,7 +111,8 @@ public class BuildTwitterSentiCorpusDictionary {
 		return map;
 	}
 	
-	public void buildDicFile(OMTwitterReader reader, String out) throws IOException {
+	public void buildDicFile(String file, int[] fields, String fieldDelimiter, String out) throws IOException {
+		OMTwitterCorpusFileReader reader = new OMTwitterCorpusFileReader(file, fieldDelimiter, fields);
 		Map<String,TokenFreq> map = null;
 		int[] countArray = new int[4];
 		double[] maxScoreArray = new double[2];
