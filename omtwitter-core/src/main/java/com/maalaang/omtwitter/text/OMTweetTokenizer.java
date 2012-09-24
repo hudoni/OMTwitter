@@ -50,4 +50,25 @@ public class OMTweetTokenizer {
 		
 		return tokens;
 	}
+	
+	public static OMTweetToken omtToken(String token) {
+		int type = 0;
+		switch (token.charAt(0)) {
+		case '#':
+			type = OMTweetToken.TOKEN_TYPE_HASHTAG;
+			break;
+		case '@':
+			type = OMTweetToken.TOKEN_TYPE_USER;
+			break;
+		case 'h':
+			if (token.startsWith("http")) {
+				type = OMTweetToken.TOKEN_TYPE_URL;
+				break;
+			}
+		default:
+			type = OMTweetToken.TOKEN_TYPE_NORMAL;
+		}
+		
+		return new OMTweetToken_Impl(type, -1, -1, token);
+	}
 }
