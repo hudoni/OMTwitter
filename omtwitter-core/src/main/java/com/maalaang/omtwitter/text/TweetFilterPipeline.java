@@ -68,15 +68,23 @@ public class TweetFilterPipeline {
 		boolean passed = true;
 		
 		for (TweetFilter f : filterList) {
-			f.next(tweet, tokenList);
-			res = f.isFilteredOut();
-			
-			if (res) {
-				logger.debug(filterNames[i] + " filtered out - " + tweet);
+			try {
+				f.next(tweet, tokenList);
+				res = f.isFilteredOut();
+				
+				if (res) {
+					logger.debug(filterNames[i] + " filtered out - " + tweet);
+					passed = false;
+				}
+				
+			} catch (Exception e) {
+				res = true;
 				passed = false;
+				logger.error("exception occurred on filtering - " + e.getMessage());
+				
+			} finally {
+				filterResults[i++] = res;
 			}
-			
-			filterResults[i++] = res;
 		}
 		
 		return passed;
