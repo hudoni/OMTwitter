@@ -65,7 +65,7 @@ public class CrfClassificationAnnotator extends JCasAnnotator_ImplBase {
 		while (it.hasNext()) {
 			TokenAnnotation tokenAnnotation = (TokenAnnotation)it.next();
 			data[0][i] = tokenAnnotation.getCoveredText();
-			data[0][i] = tokenAnnotation.getPosTag();
+			data[1][i] = tokenAnnotation.getPosTag();
 			i++;
 		}
 		

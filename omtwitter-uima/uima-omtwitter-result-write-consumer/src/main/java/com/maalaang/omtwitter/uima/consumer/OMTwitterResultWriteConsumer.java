@@ -41,7 +41,9 @@ public class OMTwitterResultWriteConsumer extends CasConsumer_ImplBase {
 	private Logger logger = null;
 	private boolean skipTweetWithNoEntity = false;
 	private String entityNoneLabel = null;
-	private String[][] entityList = null;
+//	private String[][] entityList = null;
+	private int[][] entityIdxList = null;
+	private String[] entityLabelList = null;
 
 	@Override
 	public void initialize() throws ResourceInitializationException {
@@ -58,7 +60,9 @@ public class OMTwitterResultWriteConsumer extends CasConsumer_ImplBase {
 		
 		skipTweetWithNoEntity = (Boolean) getConfigParameterValue(PARAM_SKIP_TWEET_WITH_NO_ENTITY);
 		entityNoneLabel = (String) getConfigParameterValue(PARAM_ENTITY_NONE_LABEL);
-		entityList = new String[ENTITY_MAX][2];
+//		entityList = new String[ENTITY_MAX][2];
+		entityIdxList = new int[ENTITY_MAX][2];
+		entityLabelList = new String[ENTITY_MAX];
 	}
 
 	/* (non-Javadoc)
@@ -73,7 +77,7 @@ public class OMTwitterResultWriteConsumer extends CasConsumer_ImplBase {
 			throw new ResourceProcessException(e);
 		}
 		
-		String entityStr = null;
+		boolean in = false;
 		String entityLabel = null;
 		
 		int idx = 0;
@@ -84,41 +88,45 @@ public class OMTwitterResultWriteConsumer extends CasConsumer_ImplBase {
 			String label = tokenAnn.getEntityLabel();
 			
 			if (entityNoneLabel.equals(label)) {
-				if (entityStr != null) {
-					entityList[idx][0] = entityStr;
-					entityList[idx++][1] = entityLabel;
-					entityStr = null;
-					entityLabel = null;
+				if (in) {
+					idx++;
+					in = false;
 				}
-			} else if (entityStr == null) {
-				entityStr = tokenAnn.getCoveredText();
-				entityLabel = label;
-			} else if (entityLabel.equals(label)) {
-				entityStr += " " + tokenAnn.getCoveredText();
-			} else {
-				entityList[idx][0] = entityStr;
-				entityList[idx++][1] = entityLabel;
+			} else if (!in) {
+				entityIdxList[idx][0] = tokenAnn.getBegin();
+				entityIdxList[idx][1] = tokenAnn.getEnd();
 				
-				entityStr = tokenAnn.getCoveredText();
+				entityLabel = tokenAnn.getEntityLabel();
+				entityLabelList[idx] = entityLabel;
+				in = true;
+			} else if (entityLabel.equals(label)) {
+				entityIdxList[idx][1] = tokenAnn.getEnd();
+				
+			} else {
+				entityIdxList[++idx][0] = tokenAnn.getBegin();
+				entityIdxList[idx][1] = tokenAnn.getEnd();
+				
 				entityLabel = label;
+				entityLabelList[idx] = entityLabel;
 			}
 		}
 		
-		if (entityStr != null) {
-			entityList[idx][0] = entityStr;
-			entityList[idx++][1] = entityLabel;
+		if (in) {
+			idx++;
+			in = false;
 		}
 		
 		try {
 			if (idx > 0 || !skipTweetWithNoEntity) {
-				TweetAnnotation tweetAnn= (TweetAnnotation) jcas.getAnnotationIndex(TweetAnnotation.type).iterator().next();
-				bw.write(tweetAnn.getCoveredText());
+				TweetAnnotation tweetAnn = (TweetAnnotation) jcas.getAnnotationIndex(TweetAnnotation.type).iterator().next();
+				String text = tweetAnn.getCoveredText();
+				bw.write(text);
 				bw.write('\n');
 				for (int i = 0; i < idx; i++) {
-					bw.write('\n');
-					bw.write(entityList[idx][0]);
+					bw.write('\t');
+					bw.write(text.substring(entityIdxList[i][0], entityIdxList[i][1]));
 					bw.write(" -> ");
-					bw.write(entityList[idx][1]);
+					bw.write(entityLabelList[i]);
 					bw.write('\n');
 				}
 				bw.write('\t');
