@@ -41,9 +41,10 @@ public class ConstructTwitterNamedEntityCorpus {
 	private Properties prop = null;
 	private Logger logger = null;
 	private Map<String,String> valueToPropertyMap = null;
+	private Map<String,String> propertyToLabelMap = null;
 	private int valueMinToken = 0;
 	private int valueMaxToken = 0;
-	private String noneTag = null;
+	private String nonelabel = null;
 	private double mergeRate = 0.0;
 	
 	public static void main(String[] args) {
@@ -52,7 +53,7 @@ public class ConstructTwitterNamedEntityCorpus {
 			Properties prop = new Properties();
 			prop.load(new InputStreamReader(new FileInputStream(args[0]), "UTF-8"));
 			
-			LogSystemStream.redirectErrToLog(Level.DEBUG);
+			LogSystemStream.redirectErrToLog(Level.ERROR);
 			
 			ConstructTwitterNamedEntityCorpus con = new ConstructTwitterNamedEntityCorpus(prop);
 			con.run();
@@ -68,9 +69,10 @@ public class ConstructTwitterNamedEntityCorpus {
 		this.bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(prop.getProperty("ne.corpus.file")), "UTF-8"));
 		this.logger = Logger.getLogger(getClass());
 		this.valueToPropertyMap = CollectionTextReader.readMapStringString(prop.getProperty("value.to.property.map.file"));
+		this.propertyToLabelMap = CollectionTextReader.readMapStringString(prop.getProperty("ne.corpus.property.label.map.file"));
 		this.valueMinToken = Integer.parseInt(prop.getProperty("value.token.min"));
 		this.valueMaxToken = Integer.parseInt(prop.getProperty("value.token.max"));
-		this.noneTag = prop.getProperty("ne.corpus.tag.none");
+		this.nonelabel = prop.getProperty("ne.corpus.label.none");
 		this.mergeRate = Double.parseDouble(prop.getProperty("ne.corpus.merge.rate"));
 	}
 	
@@ -213,7 +215,7 @@ public class ConstructTwitterNamedEntityCorpus {
 			start = i;
 			if ((endMin = i + valueMinToken) > tags.length) {
 				for (int k = start; k < tags.length; i++) {
-					tags[k] = noneTag;
+					tags[k] = nonelabel;
 				}
 				break;
 			}
@@ -236,8 +238,9 @@ public class ConstructTwitterNamedEntityCorpus {
 			}
 			
 			if (tag == null) {
-				tags[i] = noneTag;
+				tags[i] = nonelabel;
 			} else {
+				tag = propertyToLabelMap.get(tag);
 				for (int k = start; k < end; k++) {
 					tags[k] = tag;
 				}
