@@ -59,6 +59,7 @@ public class CrfClassificationAnnotator extends JCasAnnotator_ImplBase {
 	public void process(JCas aJCas) throws AnalysisEngineProcessException {
 		FSIterator<Annotation> it = aJCas.getAnnotationIndex(TokenAnnotation.type).iterator();
 		int size = aJCas.getAnnotationIndex(TokenAnnotation.type).size();
+		
 		String[][] data = new String[2][size];
 		
 		int i = 0;
