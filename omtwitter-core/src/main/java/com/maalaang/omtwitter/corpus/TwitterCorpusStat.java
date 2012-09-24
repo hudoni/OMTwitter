@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.maalaang.omtwitter.io.OMTwitterCorpusFileReader;
-import com.maalaang.omtwitter.io.OMTwitterReader;
 import com.maalaang.omtwitter.model.OMTweet;
 
 public class TwitterCorpusStat {
