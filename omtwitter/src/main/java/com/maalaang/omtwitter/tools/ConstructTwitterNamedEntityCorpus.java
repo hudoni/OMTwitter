@@ -248,7 +248,6 @@ public class ConstructTwitterNamedEntityCorpus {
 		return tags;
 	}
 	
-	
 	public void close() {
 		try {
 			bw.close();

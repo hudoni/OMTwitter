@@ -171,6 +171,16 @@
 			<artifactId>uima-twitter-sentiment-corpus-write-consumer</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>com.maalaang.omtwitter</groupId>
+			<artifactId>uima-crf-classification-annotator</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.maalaang.omtwitter</groupId>
+			<artifactId>uima-omtwitter-result-write-consumer</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 	</dependencies>
 
 	<build>

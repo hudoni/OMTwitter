@@ -27,7 +27,7 @@ public class TrainPNSvmClassifier {
 			Properties prop = new Properties();
 			prop.load(new InputStreamReader(new FileInputStream(args[0]), "UTF-8"));
 			
-//			LogSystemStream.redirectErrToLog(Level.ERROR);
+			LogSystemStream.redirectErrToLog(Level.ERROR);
 			
 			OMTwitterFixedFlowPipeline pipeline = new OMTwitterFixedFlowPipeline();
 
