@@ -48,7 +48,12 @@ public class SVMLightInterface {
 	public static boolean SORT_INPUT_VECTORS = true;
 
 	static {
-		System.loadLibrary("svmlight");
+		String osName = System.getProperty("os.name", "null");
+		if (osName.toLowerCase().indexOf("windows") > -1) {
+			System.loadLibrary("svmlight" + System.getProperty("sun.arch.data.model", "32"));
+		} else {
+			System.loadLibrary("svmlight");
+		}
 	}
 
 	/**
