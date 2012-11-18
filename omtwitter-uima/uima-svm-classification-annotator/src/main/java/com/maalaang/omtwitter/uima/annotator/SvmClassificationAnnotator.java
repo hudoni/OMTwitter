@@ -52,7 +52,7 @@ public class SvmClassificationAnnotator extends JCasAnnotator_ImplBase {
 		}
 		
 		try {
-			svmClassifier = new SvmClassifier(new File((String) aContext.getConfigParameterValue(PARAM_SVM_MODEL_FILE)));
+			svmClassifier = new SvmClassifier((String) aContext.getConfigParameterValue(PARAM_SVM_MODEL_FILE));
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.getMessage());
 			throw new ResourceInitializationException(e);

@@ -4,6 +4,7 @@
 package com.maalaang.comtwitter.uima.annotator;
 
 import java.io.FileInputStream;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 
 import org.apache.uima.UimaContext;
@@ -40,14 +41,18 @@ public class CrfClassificationAnnotator extends JCasAnnotator_ImplBase {
 		logger = aContext.getLogger();
 		
 		try {
-			FileInputStream fis = new FileInputStream((String)aContext.getConfigParameterValue(PARAM_CRF_MODEL_FILE));
-			ObjectInputStream ois = new ObjectInputStream(fis);
+			String crfModel = (String)aContext.getConfigParameterValue(PARAM_CRF_MODEL_FILE);
+			InputStream is = getClass().getClassLoader().getResourceAsStream(crfModel);
+			if (is == null) {
+				is = new FileInputStream(crfModel);
+			}
+			ObjectInputStream ois = new ObjectInputStream(is);
 			crf = (CRF)ois.readObject();
 			pipe = crf.getInputPipe();
 			pipe.setTargetProcessing(false);
 			
 			ois.close();
-			fis.close();
+//			fis.close();
 			
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.getMessage());
