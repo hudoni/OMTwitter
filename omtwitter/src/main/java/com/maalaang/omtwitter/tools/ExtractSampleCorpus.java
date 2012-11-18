@@ -56,6 +56,9 @@ public class ExtractSampleCorpus {
 		int sampleWindow = Integer.parseInt(prop.getProperty("sample.window"));
 		int sampleNumber = Integer.parseInt(prop.getProperty("sample.number"));
 		int i = 0;
+		long cnt = 0;
+		
+		logger.info("extract " + sampleNumber + " tweets in every " + sampleWindow + " tweets - " +prop.getProperty("corpus.file.in"));
 				
 		while ((line = br.readLine()) != null) {
 			if (i == sampleWindow) {
@@ -64,8 +67,10 @@ public class ExtractSampleCorpus {
 			if (i++ < sampleNumber) {
 				bw.write(line);
 				bw.write('\n');
+				cnt++;
 			}
 		}
+		logger.info(cnt + " tweets were extracted - " + prop.getProperty("corpus.file.out"));
 		
 		bw.close();
 		br.close();

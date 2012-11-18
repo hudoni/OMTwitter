@@ -59,8 +59,11 @@ public class TrainPNSvmClassifier {
 			pipeline.addAnnotator("TwitterSentimentScoreAnnotator", "com/maalaang/omtwitter/uima/annotator/uima-twitter-sentiment-score-annotator.xml");
 			pipeline.setAnnotatorParameter("TwitterSentimentScoreAnnotator", "sentiScoreDicObjectFile", prop.getProperty("tsc.dic.object"));
 
-			pipeline.addConsumer("XmiWriteConsumer", "com/maalaang/omtwitter/uima/consumer/uima-xmi-write-consumer.xml");
-			pipeline.setConsumerParameter("XmiWriteConsumer", "outputDirectory", prop.getProperty("annotation.result.dir"));
+			String annResultDir = prop.getProperty("annotation.result.dir", null);
+			if (annResultDir != null) {
+				pipeline.addConsumer("XmiWriteConsumer", "com/maalaang/omtwitter/uima/consumer/uima-xmi-write-consumer.xml");
+				pipeline.setConsumerParameter("XmiWriteConsumer", "outputDirectory", annResultDir);
+			}
 
 			pipeline.addConsumer("SvmTrainingDataWriteConsumer", "com/maalaang/omtwitter/uima/consumer/uima-svm-training-data-write-consumer.xml");
 			pipeline.setConsumerParameter("SvmTrainingDataWriteConsumer", "svmFVFactoryClassName", "com.maalaang.omtwitter.uima.ml.SvmScoreSumUnigramExFVFactory");
