@@ -13,6 +13,7 @@ import java.util.ArrayList;
 
 import cc.mallet.fst.CRF;
 import cc.mallet.fst.CRFTrainerByLabelLikelihood;
+import cc.mallet.fst.CRFTrainerByThreadedLabelLikelihood;
 import cc.mallet.pipe.Pipe;
 import cc.mallet.pipe.SerialPipes;
 import cc.mallet.pipe.TokenSequence2FeatureVectorSequence;
@@ -48,7 +49,7 @@ public class CrfClassifier {
 		return crf.label(instance);
 	}
 
-	public void train(String[] trainingFiles, String fieldDelim, int[] fields, String modelFile, String featureDumpFile, boolean writeFeatureFile) throws IOException, ClassNotFoundException {
+	public void train(String[] trainingFiles, String fieldDelim, int[] fields, String modelFile, String featureDumpFile, boolean writeFeatureFile, int threadNum) throws IOException, ClassNotFoundException {
 		ArrayList<Pipe> pipes = new ArrayList<Pipe>();
 
 		int[][] conjunctions = new int[4][];
@@ -77,23 +78,45 @@ public class CrfClassifier {
 		}
 		
 		CRF crf = new CRF(pipe, null);
-		crf.addStatesForLabelsConnectedAsIn(trainingInstances);
+		
+//		crf.addStatesForLabelsConnectedAsIn(trainingInstances);
+		crf.addStatesForThreeQuarterLabelsConnectedAsIn(trainingInstances);
+		crf.addStartState();
+		
+//		for (int i = 0; i < crf.numStates(); i++) {
+//			crf.getState(i).setInitialWeight (Transducer.IMPOSSIBLE_WEIGHT);
+//		}
+//		crf.getState(startName).setInitialWeight(0.0);
+
 		
 //		crf.addStatesForThreeQuarterLabelsConnectedAsIn(trainingInstances);
 //		crf.addStatesForHalfLabelsConnectedAsIn(trainingInstances);
-		
-		crf.addStartState();
-
-		CRFTrainerByLabelLikelihood trainer = new CRFTrainerByLabelLikelihood(crf);
-		trainer.setGaussianPriorVariance(10.0);
 		
 //		CRFTrainerByStochasticGradient trainer = new CRFTrainerByStochasticGradient(crf, 1.0);
 //		CRFTrainerByL1LabelLikelihood trainer = new CRFTrainerByL1LabelLikelihood(crf, 0.75);
 
 //		trainer.addEvaluator(new PerClassAccuracyEvaluator(testingInstances, "testing"));
 //		trainer.addEvaluator(new TokenAccuracyEvaluator(testingInstances, "testing"));
-		
-		trainer.train(trainingInstances);
+
+		if (threadNum > 1) {
+			CRFTrainerByThreadedLabelLikelihood crft = new CRFTrainerByThreadedLabelLikelihood(crf, threadNum);
+			crft.setGaussianPriorVariance(10.0);
+			
+//	      	boolean converged;
+//	      	int iterations = 500;
+//	      	for (int i = 1; i <= iterations; i++) {
+//	      		converged = crft.train(trainingInstances, 1);
+//	      		if (converged)
+//	      			break;
+//	      	}
+			crft.train(trainingInstances);
+	      	crft.shutdown();
+		} else {
+			CRFTrainerByLabelLikelihood crft = new CRFTrainerByLabelLikelihood(crf);
+			crft.setGaussianPriorVariance(10.0);
+			crft.train(trainingInstances);
+		}
+	
 		
 		if (!writeFeatureFile) {
 			ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(modelFile));
