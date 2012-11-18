@@ -1,6 +1,0 @@
-query	author	this is an example tweet
-#sangwon	sangwon	hello world. my name is #sangwon :)
-iphone	redhat	I don't like iphone :(
-iphone	sam	I don't like the big screen of galaxy s3 :(
-iphone	sam	I have no idea
-gun	shot	I like gun chamber. what do you like?
