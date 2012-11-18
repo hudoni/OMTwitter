@@ -24,7 +24,7 @@ public class TrainCrfNamedEntityRecognizer {
 			trainingFiles[0] = prop.getProperty("ne.corpus.file");
 			
 			crf.train(trainingFiles, prop.getProperty("ne.corpus.fields.delim"), OMTwitterCorpusFile.fieldNameToId(prop.getProperty("ne.corpus.fields"), "\\s+"),
-					prop.getProperty("crf.model"), prop.getProperty("crf.feature.dump.file"), Boolean.parseBoolean(prop.getProperty("crf.feature.dump")));
+					prop.getProperty("crf.model"), prop.getProperty("crf.feature.dump.file"), Boolean.parseBoolean(prop.getProperty("crf.feature.dump")), 3);
 			
 		} catch (Exception e) {
 			e.printStackTrace();

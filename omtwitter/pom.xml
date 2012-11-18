@@ -118,6 +118,11 @@
 		</dependency>
 		<dependency>
 			<groupId>com.maalaang.omtwitter</groupId>
+			<artifactId>omtwitter-models</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.maalaang.omtwitter</groupId>
 			<artifactId>uima-twitter-corpus-reader</artifactId>
 			<version>${project.version}</version>
 		</dependency>
@@ -224,7 +229,7 @@
 									<version>1.0.0</version>
 									<type>jar</type>
 									<overWrite>true</overWrite>
-									<includes>jnisvmlight/libsvmlight.so,jnisvmlight/libsvmlight.jnilib,jnisvmlight/svmlight.dll</includes>
+									<includes>jnisvmlight/libsvmlight.so,jnisvmlight/libsvmlight.jnilib,jnisvmlight/svmlight32.dll,jnisvmlight/svmlight64.dll</includes>
 									<outputDirectory>${project.build.directory}/lib</outputDirectory>
 								</artifactItem>
 							</artifactItems>

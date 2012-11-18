@@ -2,6 +2,7 @@ package com.maalaang.omtwitter.ml;
 
 import java.io.File;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.ParseException;
 
 import jnisvmlight.FeatureVector;
@@ -12,6 +13,14 @@ public class SvmClassifier {
 	
 	public SvmClassifier(File modelFile) throws MalformedURLException, ParseException {
 		model = SVMLightModel.readSVMLightModelFromURL(modelFile.toURI().toURL());
+	}
+	
+	public SvmClassifier(String modelFile) throws MalformedURLException, ParseException {
+		URL url = SvmClassifier.class.getClassLoader().getResource(modelFile);
+		if (url == null) {
+			url = new File(modelFile).toURI().toURL();
+		}
+		model = SVMLightModel.readSVMLightModelFromURL(url);
 	}
 	
 	public double classify(SvmFeatureVector fv) {

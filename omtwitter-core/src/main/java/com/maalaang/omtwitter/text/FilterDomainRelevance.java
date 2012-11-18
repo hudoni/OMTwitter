@@ -72,7 +72,6 @@ public class FilterDomainRelevance implements TweetFilter {
 		if (!useWindowScore && ++processCnt >= windowSize) {
 			useWindowScore = true;
 		}
-		
 	}
 
 	public boolean isFilteredOut() {

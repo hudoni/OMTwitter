@@ -13,11 +13,9 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 import com.maalaang.omtwitter.io.CollectionTextReader;
-import com.maalaang.omtwitter.io.LogSystemStream;
 import com.maalaang.omtwitter.io.OMTwitterCorpusFile;
 import com.maalaang.omtwitter.io.OMTwitterCorpusFileReader;
 import com.maalaang.omtwitter.io.OMTwitterReader;
@@ -49,11 +47,10 @@ public class ConstructTwitterNamedEntityCorpus {
 	
 	public static void main(String[] args) {
 		try {
-			
 			Properties prop = new Properties();
 			prop.load(new InputStreamReader(new FileInputStream(args[0]), "UTF-8"));
 			
-			LogSystemStream.redirectErrToLog(Level.ERROR);
+//			LogSystemStream.redirectErrToLog(Level.ERROR);
 			
 			ConstructTwitterNamedEntityCorpus con = new ConstructTwitterNamedEntityCorpus(prop);
 			con.run();
@@ -166,6 +163,9 @@ public class ConstructTwitterNamedEntityCorpus {
 		bw.write('\t');
 		if ((query = tweet.getQuery()) != null) {
 			bw.write(query);
+			bw.write('\t');
+		} else {
+			bw.write(OMTwitterCorpusFile.FIELD_EMPTY_STR);
 			bw.write('\t');
 		}
 		
