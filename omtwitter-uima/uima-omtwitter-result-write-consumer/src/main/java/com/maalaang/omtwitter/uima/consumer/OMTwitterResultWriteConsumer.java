@@ -31,6 +31,7 @@ public class OMTwitterResultWriteConsumer extends CasConsumer_ImplBase {
 	private final static String PARAM_RESULT_FILE = "resultFile";
 	private final static String PARAM_SKIP_TWEET_WITH_NO_ENTITY = "skipTweetWithNoEntity";
 	private final static String PARAM_ENTITY_NONE_LABEL = "entityNoneLabel";
+	private final static String PARAM_PRINT_RESULT = "printResult";
 	
 	private final static int ENTITY_MAX = 128;
 	
@@ -38,9 +39,9 @@ public class OMTwitterResultWriteConsumer extends CasConsumer_ImplBase {
 	private Logger logger = null;
 	private boolean skipTweetWithNoEntity = false;
 	private String entityNoneLabel = null;
-//	private String[][] entityList = null;
 	private int[][] entityIdxList = null;
 	private String[] entityLabelList = null;
+	private boolean printResult = false;
 
 	@Override
 	public void initialize() throws ResourceInitializationException {
@@ -57,9 +58,9 @@ public class OMTwitterResultWriteConsumer extends CasConsumer_ImplBase {
 		
 		skipTweetWithNoEntity = (Boolean) getConfigParameterValue(PARAM_SKIP_TWEET_WITH_NO_ENTITY);
 		entityNoneLabel = (String) getConfigParameterValue(PARAM_ENTITY_NONE_LABEL);
-//		entityList = new String[ENTITY_MAX][2];
 		entityIdxList = new int[ENTITY_MAX][2];
 		entityLabelList = new String[ENTITY_MAX];
+		printResult = (Boolean) getConfigParameterValue(PARAM_PRINT_RESULT);
 	}
 
 	/* (non-Javadoc)
@@ -130,12 +131,28 @@ public class OMTwitterResultWriteConsumer extends CasConsumer_ImplBase {
 				bw.write(tweetAnn.getPolarity());
 				bw.write("\n\n");
 				bw.flush();
+				
+				if (printResult) {
+					StringBuffer sb = new StringBuffer();
+					sb.append('\n');
+					sb.append(text);
+					sb.append('\n');
+					for (int i = 0; i < idx; i++) {
+						sb.append('\t');
+						sb.append(text.substring(entityIdxList[i][0], entityIdxList[i][1]));
+						sb.append(" -> ");
+						sb.append(entityLabelList[i]);
+						sb.append('\n');
+					}
+					sb.append('\t');
+					sb.append(tweetAnn.getPolarity());
+					logger.log(Level.INFO, sb.toString());
+				}
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.getMessage());
 			throw new ResourceProcessException(e);
 		}
-
 	}
 
 	@Override
@@ -147,5 +164,4 @@ public class OMTwitterResultWriteConsumer extends CasConsumer_ImplBase {
 		}
 		super.destroy();
 	}
-
 }
