@@ -3,8 +3,10 @@
  */
 package com.maalaang.omtwitter.uima.annotator;
 
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 import org.apache.uima.UimaContext;
@@ -86,7 +88,12 @@ public class SentimentScoreAnnotator extends CasAnnotator_ImplBase {
 		maxWindowSize = (Integer) aContext.getConfigParameterValue(PARAM_MAX_WINDOW_SIZE);
 
 		try {
-			sentiScoreDic = SentimentScoreDictionaryFactory.loadFromSerializedFile((String) aContext.getConfigParameterValue(PARAM_SENTI_SCORE_DIC_OBJ_FILE));
+			String dicFile = (String)aContext.getConfigParameterValue(PARAM_SENTI_SCORE_DIC_OBJ_FILE);
+			InputStream is = getClass().getClassLoader().getResourceAsStream(dicFile);
+			if (is == null) {
+				is = new FileInputStream(dicFile);
+			}
+			sentiScoreDic = SentimentScoreDictionaryFactory.loadFromSerializedFile(is);
 		} catch (FileNotFoundException e) {
 			logger.log(Level.SEVERE, e.getMessage());
 			throw new ResourceInitializationException(e);

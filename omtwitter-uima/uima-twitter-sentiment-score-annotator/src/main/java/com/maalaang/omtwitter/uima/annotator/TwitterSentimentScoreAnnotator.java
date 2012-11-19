@@ -3,8 +3,10 @@
  */
 package com.maalaang.omtwitter.uima.annotator;
 
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
@@ -46,7 +48,12 @@ public class TwitterSentimentScoreAnnotator extends JCasAnnotator_ImplBase {
 		tweetTokenizer = new OMTweetTokenizer();
 		
 		try {
-			sentiScoreDic = SentimentScoreDictionaryFactory.loadFromSerializedFile((String) aContext.getConfigParameterValue(PARAM_SENTI_SCORE_DIC_OBJ_FILE));
+			String dicFile = (String)aContext.getConfigParameterValue(PARAM_SENTI_SCORE_DIC_OBJ_FILE);
+			InputStream is = getClass().getClassLoader().getResourceAsStream(dicFile);
+			if (is == null) {
+				is = new FileInputStream(dicFile);
+			}
+			sentiScoreDic = SentimentScoreDictionaryFactory.loadFromSerializedFile(is);
 		} catch (FileNotFoundException e) {
 			logger.log(Level.SEVERE, e.getMessage());
 			throw new ResourceInitializationException(e);
