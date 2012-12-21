@@ -422,10 +422,19 @@ public class DBPediaDomainOntologyStat {
 						for (String s : valueTokens) {
 							s = s.trim();
 							
-							if (s.length() < 1)
+							if (s.length() < 3)
 								continue;
 							
 							if (stopwords.contains(s))
+								continue;
+							
+							boolean isNumber = true;
+							try {
+								Double.parseDouble(s);
+							} catch (NumberFormatException e) {
+								isNumber = false;
+							}
+							if (isNumber)
 								continue;
 							
 							String[] tokens = s.split(" ");
@@ -433,16 +442,6 @@ public class DBPediaDomainOntologyStat {
 								continue;
 							
 							WordPattern.normalize(tokens);
-							
-							boolean hasWord = false;
-							for (String t : tokens) {
-								if (WordPattern.isPatternName(t) == false) {
-									hasWord = true;
-									break;
-								}
-							}
-							if (!hasWord)
-								continue;
 							
 							StringBuilder sb = null;
 							for (String t : tokens) {
