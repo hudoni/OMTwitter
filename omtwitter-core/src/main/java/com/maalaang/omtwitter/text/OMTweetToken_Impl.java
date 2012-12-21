@@ -51,18 +51,16 @@ public class OMTweetToken_Impl implements OMTweetToken {
 		case TOKEN_TYPE_URL:
 			return NORMALIZED_TEXT_URL;
 		case TOKEN_TYPE_HASHTAG:
-			return text.toLowerCase(); 
+			return text.toLowerCase().replaceFirst("#", "").replaceAll("[0-9]", "N"); 
 		case TOKEN_TYPE_NORMAL:
 			String normText = text.toLowerCase();
 			Matcher matcherDuplicate = patternDuplicate.matcher(normText);
-			
 			while (matcherDuplicate.find()) {
 				String duplicatePart = matcherDuplicate.group();
 				normText = normText.replace(duplicatePart, duplicatePart.substring(0, 2));
 				matcherDuplicate = patternDuplicate.matcher(normText);
 			}
-			
-			return normText;
+			return normText.replace("[0-9]", "N");
 		default:
 			throw new IllegalStateException();
 		}
