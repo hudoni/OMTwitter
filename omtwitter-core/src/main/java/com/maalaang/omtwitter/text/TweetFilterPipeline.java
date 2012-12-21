@@ -56,12 +56,11 @@ public class TweetFilterPipeline {
 	public boolean check(OMTweet tweet) {
 		OMTweetToken[] tokenList = tweetTokenizer.tokenize(tweet.getText().toLowerCase());
 		
-		if (logger.isDebugEnabled()) {
-			for (OMTweetToken t : tokenList) {
-				logger.debug(t);
-			}
-			
-		}
+//		if (logger.isDebugEnabled()) {
+//			for (OMTweetToken t : tokenList) {
+//				logger.debug(t);
+//			}
+//		}
 		
 		int i = 0;
 		boolean res = false;
@@ -91,10 +90,10 @@ public class TweetFilterPipeline {
 	}
 	
 	public void close() {
-		logger.debug("close TweetFilterPipeline");
+		logger.info("close TweetFilterPipeline");
 		int i = 0;
 		for (TweetFilter f : filterList) {
-			logger.debug("close " + filterNames[i]);
+			logger.info("close " + filterNames[i]);
 			f.close();
 			i++;
 		}
