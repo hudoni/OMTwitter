@@ -50,6 +50,7 @@ public class BuildDBPediaDomainOntologyStat {
 			Set<String> delegateProperties = stat.delegateProperties(pisMap, 0.1);
 			CollectionTextWriter.writeSetString(delegateProperties, prop.getProperty("property.delegate.file"), true);
 			
+			
 			// words
 			Map<String,Integer> wordFreqDomainMap = stat.infoboxValueWordFreq(prop.getProperty("infobox.property.file"), stopwords, resources, prop.getProperty("word.freq.domain.file"));
 			CollectionTextWriter.writeMapStringInteger(wordFreqDomainMap, prop.getProperty("word.freq.domain.file"), true);

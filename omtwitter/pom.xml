@@ -16,10 +16,10 @@
 	</properties>
 
 	<repositories>
-		<repository>
+		<!-- repository>
 			<id>release-repo</id>
 			<url>https://raw.github.com/hudoni/OMTwitter/master/mvn-repo/releases/</url>
-		</repository>
+		</repository-->
 		<repository>
 			<id>dev.biordf.net</id>
 			<url>http://dev.biordf.net/maven/</url>
@@ -190,6 +190,11 @@
 			<artifactId>uima-omtwitter-result-write-consumer</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>com.maalaang.omtwitter</groupId>
+			<artifactId>uima-omtwitter-result-evaluate-consumer</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -264,4 +269,3 @@
 		</pluginManagement>
 	</build>
 </project>
-

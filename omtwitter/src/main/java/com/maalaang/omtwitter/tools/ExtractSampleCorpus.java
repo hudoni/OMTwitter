@@ -36,7 +36,7 @@ public class ExtractSampleCorpus {
 			LogSystemStream.redirectErrToLog(Level.ERROR);
 			
 			ExtractSampleCorpus con = new ExtractSampleCorpus(prop);
-			con.run();
+			con.run(Integer.parseInt(prop.getProperty("sample.window")), Integer.parseInt(prop.getProperty("sample.number")));
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -48,13 +48,13 @@ public class ExtractSampleCorpus {
 		this.logger = Logger.getLogger(getClass());
 	}
 	
-	public void run() throws Exception {
+	public void run(int sampleWindow, int sampleNumber) throws Exception {
+		String writeFile = prop.getProperty("corpus.file.out") + "." + sampleNumber + "." + sampleWindow;
+		
 		BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(prop.getProperty("corpus.file.in")), "UTF-8"));
-		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(prop.getProperty("corpus.file.out")), "UTF-8"));
+		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(writeFile), "UTF-8"));
 		
 		String line = null;
-		int sampleWindow = Integer.parseInt(prop.getProperty("sample.window"));
-		int sampleNumber = Integer.parseInt(prop.getProperty("sample.number"));
 		int i = 0;
 		long cnt = 0;
 		
@@ -70,7 +70,7 @@ public class ExtractSampleCorpus {
 				cnt++;
 			}
 		}
-		logger.info(cnt + " tweets were extracted - " + prop.getProperty("corpus.file.out"));
+		logger.info(cnt + " tweets were extracted - " + writeFile);
 		
 		bw.close();
 		br.close();

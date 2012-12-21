@@ -70,7 +70,7 @@ public class TrainPNSvmClassifier {
 			pipeline.setConsumerParameter("SvmTrainingDataWriteConsumer", "svmTargetExtractorClassName", "com.maalaang.omtwitter.uima.ml.SvmPNTargetExtractor");
 			pipeline.setConsumerParameter("SvmTrainingDataWriteConsumer", "svmTrainingDataFile", prop.getProperty("svm.training.data.file"));
 
-			pipeline.run(true);
+			pipeline.run(true, "TrainPNSvmClassifier.xml");
 
 			SvmTrainer.train(prop.getProperty("svm.training.data.file"), prop.getProperty("svm.model"), SvmTrainer.numOfExamples(prop.getProperty("svm.training.data.file")));
 

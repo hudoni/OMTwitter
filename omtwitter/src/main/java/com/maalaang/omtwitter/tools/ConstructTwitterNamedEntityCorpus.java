@@ -1,5 +1,6 @@
 package com.maalaang.omtwitter.tools;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -8,6 +9,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -46,6 +49,8 @@ public class ConstructTwitterNamedEntityCorpus {
 	private int valueMaxToken = 0;
 	private String nonelabel = null;
 	private double mergeRate = 0.0;
+	private Set<String> searchQuerySet = null;
+	private String searchQueryToProperty = null;
 	
 	public static void main(String[] args) {
 		try {
@@ -67,12 +72,14 @@ public class ConstructTwitterNamedEntityCorpus {
 		this.tagger = new MaxentTagger(MaxentTagger.DEFAULT_JAR_PATH);
 		this.bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(prop.getProperty("ne.corpus.file")), "UTF-8"));
 		this.logger = Logger.getLogger(getClass());
-		this.valueToPropertyMap = CollectionTextReader.readMapStringString(prop.getProperty("value.to.property.map.file"));
+		this.valueToPropertyMap = valueToPropertyMap(prop.getProperty("value.to.property.map.file"));
 		this.propertyToLabelMap = CollectionTextReader.readMapStringString(prop.getProperty("ne.corpus.property.label.map.file"));
 		this.valueMinToken = Integer.parseInt(prop.getProperty("value.token.min"));
 		this.valueMaxToken = Integer.parseInt(prop.getProperty("value.token.max"));
 		this.nonelabel = prop.getProperty("ne.corpus.label.none");
 		this.mergeRate = Double.parseDouble(prop.getProperty("ne.corpus.merge.rate"));
+		this.searchQuerySet = searchQuerySet(prop.getProperty("raw.corpus.search.query.map.file"));
+		this.searchQueryToProperty = prop.getProperty("raw.corpus.search.query.to.property");
 	}
 	
 	public void run() throws IOException {
@@ -189,10 +196,11 @@ public class ConstructTwitterNamedEntityCorpus {
 				bw.write('/');
 				bw.write(word.tag());
 				bw.write('/');
-				bw.write(neTags[neTagsIdx++]);
+				bw.write(neTags[neTagsIdx]);
+				
+				neTagsIdx++;
 			}
 		}
-		
 		bw.write('\n');
 		bw.flush();
 	}
@@ -203,7 +211,7 @@ public class ConstructTwitterNamedEntityCorpus {
 		
 		int idx = 0;
 		for (TaggedWord word : sent) {
-			normWords[idx++] = WordPattern.normalize(word.word()).replaceFirst("^[#@]", "");
+			normWords[idx++] = WordPattern.normalize(word.word());
 		}
 		
 		int start;
@@ -233,7 +241,11 @@ public class ConstructTwitterNamedEntityCorpus {
 						key += " " + normWords[j];
 					}
 				}
-				if ((tag = valueToPropertyMap.get(key)) != null) {
+				if (searchQueryToProperty != null && searchQuerySet.contains(key)) {
+					tag = searchQueryToProperty;
+					logger.debug(key + " > " + searchQueryToProperty);
+					break;
+				} else if ((tag = valueToPropertyMap.get(key)) != null) {
 					logger.debug(key + " > " + tag);
 					break;
 				}
@@ -243,14 +255,80 @@ public class ConstructTwitterNamedEntityCorpus {
 				tags[i] = nonelabel;
 			} else {
 				tag = propertyToLabelMap.get(tag);
-				for (int k = start; k < end; k++) {
-					tags[k] = tag;
+				int k = start;
+				tags[k++] = tag + "_B";
+				for ( ; k < end - 1; k++) {
+					tags[k] = tag + "_M";
 				}
+				if (k == end - 1) {
+					tags[k] = tag + "_E";
+				}
+				
 				i = end - 1;
 			}
 		}
 		
 		return tags;
+	}
+	
+	private Set<String> searchQuerySet(String file) throws IOException {
+		HashSet<String> set = new HashSet<String>();
+		BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"));
+		
+		String line = null;
+		while ((line = br.readLine()) != null) {
+			String[] tokens = line.split("\t");
+			
+			String w = tokens[0].replaceAll("\"", "");
+			String w1 = WordPattern.replaceRomanToArabic(w);
+			set.add(w.replaceFirst("#", ""));
+			set.add(w1.replaceFirst("#", ""));
+			
+			w = tokenizeAndConcatText(w, " ");
+			w1 = tokenizeAndConcatText(w1, " ");
+			set.add(w.replaceFirst("#", ""));
+			set.add(w1.replaceFirst("#", ""));
+		}
+		br.close();
+		
+		for (String s : set) {
+			System.out.println(s);
+		}
+		
+		return set;
+	}
+	
+	private static Map<String, String> valueToPropertyMap(String file) throws IOException {
+		HashMap<String, String> map = new HashMap<String, String>();
+		BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"));
+		String line = null;
+		while ((line = br.readLine()) != null) {
+			String[] tokens = line.split("\t");
+			map.put(tokens[0].trim(), tokens[1].trim());
+			map.put(tokenizeAndConcatText(tokens[0].trim(), " "), tokens[1].trim());
+			System.out.println(tokens[0].trim());
+			System.out.println(tokenizeAndConcatText(tokens[0].trim(), " "));
+		}
+		br.close();
+		
+		return map;
+	}
+	
+	private static String tokenizeAndConcatText(String text, String s) {
+		List<List<HasWord>> sentences =  MaxentTagger.tokenizeText(new StringReader(text));
+		StringBuffer sb = null;
+		for (List<HasWord> sentence : sentences) {
+			for (HasWord word : sentence) {
+				if (sb == null) {
+					sb = new StringBuffer();
+					sb.append(word.word());
+				} else {
+					sb.append(s);
+					sb.append(word.word());
+				}
+			}
+		}
+		return sb.toString().replaceAll("\\\\/", "/").trim();
 	}
 	
 	public void close() {

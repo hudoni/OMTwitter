@@ -101,7 +101,7 @@ public class ConstructTwitterSentimentCorpus {
 		pipeline.setConsumerParameter("TwitterSentimentCorpusWriteConsumer", "swnSubjectivityScoreWindowStart", Float.parseFloat(prop.getProperty("senti.corpus.search.swn.subjectivity.score.window.start")));
 		pipeline.setConsumerParameter("TwitterSentimentCorpusWriteConsumer", "tscSubjectivityScoreWindowStart", Float.parseFloat(prop.getProperty("senti.corpus.search.tsc.subjectivity.score.window.start")));
 		
-		pipeline.run(true);
+		pipeline.run(true, "ConstructSentiCorpusFromSearchCorpus.xml");
 	}
 	
 	private void constructSentiCorpusFromSampleCorpus() throws InvalidXMLException, IOException, ResourceConfigurationException, ResourceInitializationException {
@@ -148,7 +148,7 @@ public class ConstructTwitterSentimentCorpus {
 		pipeline.setConsumerParameter("TwitterSentimentCorpusWriteConsumer", "swnSubjectivityScoreWindowStart", Float.parseFloat(prop.getProperty("senti.corpus.sample.swn.subjectivity.score.window.start")));
 		pipeline.setConsumerParameter("TwitterSentimentCorpusWriteConsumer", "tscSubjectivityScoreWindowStart", Float.parseFloat(prop.getProperty("senti.corpus.sample.tsc.subjectivity.score.window.start")));
 		
-		pipeline.run(true);	
+		pipeline.run(true, "constructSentiCorpusFromSampleCorpus.xml");	
 	}
 	
 	private void constructBalancedSentiCorpus() throws IOException {

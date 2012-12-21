@@ -32,7 +32,7 @@ public class ConstructTwitterRawCorpus {
 			Set<String> stopwords = CollectionTextReader.readSetString(prop.getProperty("stopword.set.file"));
 		
 			Map<String,Set<String>> queryToResourceMap = TwitterQueryGenerator.generateQueries(domainOntologyModel, stopwords, prop.getProperty("query.gen.resource.label.lang"), Integer.parseInt(prop.getProperty("param.query.min.length")));
-			CollectionTextWriter.writeMapStringSetString(queryToResourceMap, prop.getProperty("raw.corpus.search.query.file"), true);
+			CollectionTextWriter.writeMapStringSetString(queryToResourceMap, prop.getProperty("raw.corpus.search.query.map.file"), true);
 			
 			TwitterCorpusConstructor tcc = new TwitterCorpusConstructor();
 			tcc.constructCorpusBySearch(queryToResourceMap.keySet(), prop.getProperty("raw.corpus.search.file"),

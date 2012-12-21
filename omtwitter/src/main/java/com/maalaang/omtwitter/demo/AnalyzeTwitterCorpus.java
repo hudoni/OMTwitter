@@ -18,7 +18,6 @@ import org.apache.uima.util.InvalidXMLException;
 import com.maalaang.omtwitter.io.LogSystemStream;
 import com.maalaang.omtwitter.uima.pipeline.OMTwitterFixedFlowPipeline;
 
-
 /**
  * @author Sangwon Park
  *
@@ -32,7 +31,7 @@ public class AnalyzeTwitterCorpus {
 			Properties prop = new Properties();
 			prop.load(new InputStreamReader(new FileInputStream(args[0]), "UTF-8"));
 
-			LogSystemStream.redirectErrToLog(Level.ERROR);
+			LogSystemStream.redirectErrToLog(Level.WARN);
 
 			OMTwitterFixedFlowPipeline pipeline = new OMTwitterFixedFlowPipeline();
 
@@ -87,8 +86,9 @@ public class AnalyzeTwitterCorpus {
 			pipeline.setConsumerParameter("OMTwitterResultWriteConsumer", "resultFile", prop.getProperty("omtwitter.result.file"));
 			pipeline.setConsumerParameter("OMTwitterResultWriteConsumer", "skipTweetWithNoEntity", Boolean.parseBoolean(prop.getProperty("omtwitter.result.skip.no.entity")));
 			pipeline.setConsumerParameter("OMTwitterResultWriteConsumer", "entityNoneLabel", prop.getProperty("omtwitter.result.entity.none.label"));
+			pipeline.setConsumerParameter("OMTwitterResultWriteConsumer", "printResult", Boolean.parseBoolean(prop.getProperty("omtwitter.result.print.result")));
 
-			pipeline.run(true);
+			pipeline.run(true, "AnalyzeTwitterCorpus.xml");
 
 		} catch (InvalidXMLException e) {
 			e.printStackTrace();
