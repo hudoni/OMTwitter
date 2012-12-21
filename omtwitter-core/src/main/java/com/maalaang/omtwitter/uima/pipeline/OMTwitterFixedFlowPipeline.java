@@ -132,14 +132,10 @@ public class OMTwitterFixedFlowPipeline {
 	}
 	
 	public void run(boolean wait) throws ResourceConfigurationException, ResourceInitializationException {
-		run(wait, true);
+		run(wait, this.getClass().getSimpleName() + ".xml");
 	}
 	
-	public void run(boolean wait, boolean writeAggDescFile) throws ResourceConfigurationException, ResourceInitializationException {
-		run(wait, writeAggDescFile, this.getClass().getSimpleName() + ".xml");
-	}
-	
-	public void run(boolean wait, boolean writeAggDescFile, String aggDescFile) throws ResourceConfigurationException, ResourceInitializationException {
+	public void run(boolean wait, String aggDescFile) throws ResourceConfigurationException, ResourceInitializationException {
 		FixedFlow flow = UIMAFramework.getResourceSpecifierFactory().createFixedFlow();
 		
 		LinkedList<String> list = new LinkedList<String>();
@@ -152,7 +148,7 @@ public class OMTwitterFixedFlowPipeline {
 		aggDesc.getAnalysisEngineMetaData().setFlowConstraints(flow);
 		aggDesc.getAnalysisEngineMetaData().getOperationalProperties().setMultipleDeploymentAllowed(false);
 		
-		if (writeAggDescFile) {
+		if (aggDescFile != null) {
 			try {
 				aggDesc.toXML(new OutputStreamWriter(new FileOutputStream(aggDescFile), "UTF-8"));
 				logger.log(Level.INFO, "description file for the pipeline was created - " + aggDescFile);
