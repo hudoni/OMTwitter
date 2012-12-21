@@ -40,12 +40,7 @@ public class TweetFeatures extends Pipe {
 				t.setFeatureValue("LINK", 1.0);
 				break;
 			case OMTweetToken.TOKEN_TYPE_NORMAL:
-				if (text.matches("^[0-9]+(\\.[0-9]+)?")) {
-					t.setFeatureValue("NUMBER", 1.0);
-					t.setFeatureValue(text, 1.0);
-				} else {
-					t.setFeatureValue(text, 1.0);
-				}
+				t.setFeatureValue(text, 1.0);
 				break;
 			}
 		}
