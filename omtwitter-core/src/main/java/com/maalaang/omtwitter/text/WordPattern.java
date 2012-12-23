@@ -12,14 +12,8 @@ import java.util.regex.Pattern;
  */
 public class WordPattern {
 	private static String patternPrefix = "WP_";
-	private static Pattern pNumberRome = Pattern
-			.compile("(ix|iv|vi{0,3}|i{2,3})");
-	private static Pattern pNumberArabic = Pattern
-			.compile("[0-9]+(\\.[0-9]+)*");
-	private static Pattern[] patterns = new Pattern[] { pNumberRome,
-			pNumberArabic };
-	private static String[] patternNames = new String[] {
-			patternPrefix + "NUMBER_ARABIC", patternPrefix + "NUMBER_ROME" };
+	private static Pattern pNumberRome = Pattern.compile("(ix|iv|vi{0,3}|i{2,3})");
+	private static Pattern pNumberArabic = Pattern.compile("[0-9]+(\\.[0-9]+)*");
 
 	public static String normalize(String value) {
 		value = value.toLowerCase();
